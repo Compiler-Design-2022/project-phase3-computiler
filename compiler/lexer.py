@@ -37,77 +37,78 @@ reserved = {
     'while',
 }
 tokens = [
-             'PLUS_EQUAL',
-             'MINUS_EQUAL',
-             'MULTIPLY_EQUAL',
-             'DIVIDE_EQUAL',
-             'T_DOUBLELITERAL',
-             'T_INTLITERAL',
-             'T_COMMENT',
-             'T_SINGLE_COMMENT',
-             'T_STRINGLITERAL',
-             'T_BOOLEANLITERAL',
-             'T_ID',
-             'PLUS',
-             'POINT',
-             'MINUS',
-             'TIMES',
-             'DIVIDE',
-             'LPAREN',
-             'RPAREN',
-             'LBRACE',
-             'RBRACE',
-             'LBRACKET',
-             'RBRACKET',
-             'SEMICOLON',
-             'BAR',
-             'EQUAL',
-             'MODULE',
-             'LOGICAL_OR',
-             'LOGICAL_AND',
-             'LOGICAL_EQUAL',
-             'LOGICAL_NON_EQUAL',
-             'BIGGER_THAN',
-             'BIGGER_THAN_OR_EQUAL',
-             'SMALLER_THAN',
-             'SMALLER_THAN_OR_EQUAL',
-             'COMMA',
-             'EXCLAMATION',
-             'ignore',
-             'newline',
-             # 'error',
+    ('PLUS_EQUAL', r'\+\='),
+    ('MINUS_EQUAL', r'-\='),
+    ('MULTIPLY_EQUAL', r'\*\='),
+    ('DIVIDE_EQUAL', r'/\='),
+    ('T_DOUBLELITERAL', r'([0-9]+(\.[0-9]*)((e|E)(\+|-)?[0-9]+)?|([0-9]+(\.[0-9]+)((e|E)(\+|-)?[0-9]+)?))'),
+    ('T_INTLITERAL', r'(0(x|X)[0-9a-fA-F]+|([0-9]+))'),
+    ('T_COMMENT', r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)'),
+    ('T_SINGLE_COMMENT', r'//.*'),
+    ('T_STRINGLITERAL', r'\"(\\\"|[^\"])*\"'),
+    ('T_BOOLEANLITERAL', r'(?<![a-zA-Z0-9_])(true|false)(?![a-zA-Z0-9_])'),
+    ('T_ID', r'[a-zA-Z_][a-zA-Z_0-9]*'),
+    ('PLUS', r'\+'),
+    ('POINT', r'\.'),
+    ('MINUS', r'\-'),
+    ('TIMES', r'\*'),
+    ('DIVIDE', r'/'),
+    ('LPAREN', r'\('),
+    ('RPAREN', r'\)'),
+    ('LBRACE', r'\{'),
+    ('RBRACE', r'\}'),
+    ('LBRACKET', r'\['),
+    ('RBRACKET', r'\]'),
+    ('SEMICOLON', r';'),
+    ('BAR', r'\|'),
+    ('EQUAL', r'\='),
+    ('MODULE', r'%'),
+    ('LOGICAL_OR', r'\|\|'),
+    ('LOGICAL_AND', r'\&\&'),
+    ('LOGICAL_EQUAL', r'\=\='),
+    ('LOGICAL_NON_EQUAL', r'\!\='),
+    ('BIGGER_THAN', r'\>'),
+    ('BIGGER_THAN_OR_EQUAL', r'\>\='),
+    ('SMALLER_THAN', r'\<'),
+    ('SMALLER_THAN_OR_EQUAL', r'\<\='),
+    ('COMMA', r'\,'),
+    ('EXCLAMATION', r'!'),
+    ('ignore', '\t'),
+    ('newline', r'\n+'),
+    ('SKIP', r'[ \t\v\f]+'),      												# Skip over spaces and tabs
+	('MISMATCH', r'.')
          ] + list(reserved.values())
 
-t_POINT = r'\.'
-t_PLUS = r'\+'
-t_MINUS = r'\-'
-t_TIMES = r'\*'
-t_DIVIDE = r'/'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-t_LBRACE = r'\{'
-t_RBRACE = r'\}'
-t_LBRACKET = r'\['
-t_RBRACKET = r'\]'
-t_SEMICOLON = r';'
-t_BAR = r'\|'
-t_EQUAL = r'\='
-t_LOGICAL_OR = r'\|\|'
-t_MODULE = r'%'
-t_LOGICAL_AND = r'\&\&'
-t_LOGICAL_EQUAL = r'\=\='
-t_PLUS_EQUAL = r'\+\='
-t_MINUS_EQUAL = r'-\='
-t_MULTIPLY_EQUAL = r'\*\='
-t_DIVIDE_EQUAL = r'/\='
-t_LOGICAL_NON_EQUAL = r'\!\='
-t_BIGGER_THAN = r'\>'
-t_BIGGER_THAN_OR_EQUAL = r'\>\='
-t_SMALLER_THAN = r'\<'
-t_SMALLER_THAN_OR_EQUAL = r'\<\='
-t_COMMA = r'\,'
-t_EXCLAMATION = r'!'
-t_ignore = ' \t'
+# t_POINT =
+# t_PLUS =
+# t_MINUS =
+# t_TIMES =
+# t_DIVIDE =
+# t_LPAREN =
+# t_RPAREN =
+# t_LBRACE =
+# t_RBRACE =
+# t_LBRACKET =
+# t_RBRACKET =
+# t_SEMICOLON =
+# t_BAR =
+# t_EQUAL =
+# t_LOGICAL_OR =
+# t_MODULE =
+# t_LOGICAL_AND =
+# t_LOGICAL_EQUAL =
+# t_PLUS_EQUAL =
+# t_MINUS_EQUAL =
+# t_MULTIPLY_EQUAL =
+# t_DIVIDE_EQUAL =
+# t_LOGICAL_NON_EQUAL =
+# t_BIGGER_THAN =
+# t_BIGGER_THAN_OR_EQUAL =
+# t_SMALLER_THAN =
+# t_SMALLER_THAN_OR_EQUAL =
+# t_COMMA =
+# t_EXCLAMATION =
+# t_ignore = ' '
 
 # reserved Regular Expressions
 t_FUNC = r'__func__'
@@ -145,37 +146,37 @@ t_THIS = r'this'
 t_VOID = r'void'
 t_WHILE = r'while'
 
-t_T_ID = r'[a-zA-Z_][a-zA-Z_0-9]*'
-t_T_INTLITERAL = r'(0(x|X)[0-9a-fA-F]+|([0-9]+))'
+# t_T_ID =
+# t_T_INTLITERAL =
 
 
 def t_T_STRINGLITERAL(t):
-    r'\"(\\\"|[^\"])*\"'
+
     return t
 
 
 def t_T_DOUBLELITERAL(t):
-    r'([0-9]+(\.[0-9]*)((e|E)(\+|-)?[0-9]+)?|([0-9]+(\.[0-9]+)((e|E)(\+|-)?[0-9]+)?))'
+
     return t
 
 
 def t_newline(t):
-    r'\n+'
+
     t.lexer.lineno += len(t.value)
 
 
 def t_T_COMMENT(t):
-    r'(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)'
+
     pass
 
 
 def t_T_SINGLE_COMMENT(t):
-    r'//.*'
+
     pass
 
 
 def t_T_BOOLEANLITERAL(t):
-    r'(?<![a-zA-Z0-9_])(true|false)(?![a-zA-Z0-9_])'
+
     t.type = reserved.get(t.value, 'T_BOOLEANLITERAL')
     return t
 
