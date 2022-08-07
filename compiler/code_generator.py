@@ -12,16 +12,14 @@ from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParent
 stack = []
 
 class CodeGenerator(Interpreter):
-    BOOL_STATIC = 'bool'
-
     @staticmethod
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
 
     @classmethod
     def are_boolean(cls, *variables: List[Variable]):
-        non_booleans = [i for i in variables if i.var_type.name != cls.BOOL_STATIC]
-        return not bool(len(non_booleans))
+        non_booleans = [i for i in variables if i.var_type.name != DecafTypes.bool_type]
+        return bool(len(non_booleans))
 
     def unary_neg(self, tree):
         output_code = self.visit(tree.children[0])
@@ -125,11 +123,14 @@ class CodeGenerator(Interpreter):
     # logical functions or, and, equal, not_equal, less than, equal_or_less_than, greater_than, equal_or_greater_than,
     def logical_or(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
-        if CodeGenerator.are_types_invalid(var1, var2):
+
+        if CodeGenerator.are_boolean(var1, var2):
             raise SemanticError()
 
-        if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+        output_code += MIPS.logical_or
+
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
 
 
 

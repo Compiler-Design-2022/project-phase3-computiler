@@ -69,3 +69,11 @@ class MIPS:
     		.data
     		errorMsg: .asciiz "Semantic Error"
     		"""
+
+    logical_or = """
+    			lw $t1, 0($sp)
+				lw $t0, 4($sp)
+				or $t2, $t0, $t1
+				sw $t2, 4($sp) 
+				addi $sp, $sp, 4
+                """
