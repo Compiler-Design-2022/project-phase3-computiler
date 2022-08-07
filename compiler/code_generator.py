@@ -132,6 +132,17 @@ class CodeGenerator(Interpreter):
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
+    def logical_and(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+
+        if CodeGenerator.are_boolean(var1, var2):
+            raise SemanticError()
+
+        output_code += MIPS.logical_and
+
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
 
 
 

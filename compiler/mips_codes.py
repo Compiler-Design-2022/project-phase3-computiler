@@ -77,3 +77,13 @@ class MIPS:
 				sw $t2, 4($sp) 
 				addi $sp, $sp, 4
                 """
+
+    logical_and = """
+				lw $t1, 0($sp)
+				lw $t0, 4($sp)
+				and $t2, $t0, $t1
+				sw $t2, 4($sp) 
+				addi $sp, $sp, 4
+                """
+
+
