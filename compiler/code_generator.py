@@ -9,7 +9,27 @@ stack = []
 
 
 class CodeGenerator(Interpreter):
-    pass
+    def constant(self, tree):
+        const_token_type = tree.children[0].type
+        output_code = ''
+        var_type = None
+        if const_token_type == Constants.bool_const:
+            value = int(tree.children[0].value)
+            var_type = tree.symbol_table.get_type('bool')
+            output_code = MIPS.bool_const.format(value)
+        elif const_token_type == Constants.int_const:
+            value = int(tree.children[0].value)
+            var_type = tree.symbol_table.get_type('int')
+            output_code = MIPS.int_const.format(value)
+        elif const_token_type == Constants.double_const:
+            pass
+        elif const_token_type == Constants.str_const:
+            pass
+        elif const_token_type == Constants.null_const:
+            var_type = tree.symbol_table.get_type('null')
+            output_code = MIPS.null_const
+        stack.append(Variable(name=None, var_type=var_type))
+        return output_code
 
 
 def prepare_main_tree(tree):
