@@ -1,4 +1,4 @@
-from lark import Lark, ParseError
+from lark import Lark, ParseError, Tree
 from lark.visitors import Interpreter
 from compiler.mips_codes import MIPS
 from compiler.decaf_enums import Constants, DecafTypes
@@ -14,65 +14,57 @@ class CodeGenerator(Interpreter):
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
 
+    def assign(self, tree):
+        l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+        if CodeGenerator.are_types_invalid(l_var, r_var):
+            raise SemanticError()
+        if l_var.var_type.name == DecafTypes.int_type:
+            output_code = MIPS.assignment_int
+        stack.append(l_var)
+        return output_code
+
     def div(self, tree):
-        var1_expr = tree.children[0]
-        var2_expr = tree.children[1]
-        expr1_code = self.visit(var1_expr)
-        expr2_code = self.visit(var2_expr)
-        var1 = stack.pop()
-        var2 = stack.pop()
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
-        output_code = expr1_code
-        output_code += expr2_code
         if var1.var_type.name == DecafTypes.int_type:
             output_code = MIPS.div_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
-    def mul(self, tree):
+    def prepare_calculations(self, tree):
         var1_expr = tree.children[0]
         var2_expr = tree.children[1]
         expr1_code = self.visit(var1_expr)
         expr2_code = self.visit(var2_expr)
         var1 = stack.pop()
         var2 = stack.pop()
-        if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
         output_code = expr1_code
         output_code += expr2_code
+        return var1, var2, expr1_code, expr2_code, output_code
+
+    def mul(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
             output_code = MIPS.mul_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
     def sub(self, tree):
-        var1_expr = tree.children[0]
-        var2_expr = tree.children[1]
-        expr1_code = self.visit(var1_expr)
-        expr2_code = self.visit(var2_expr)
-        var1 = stack.pop()
-        var2 = stack.pop()
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
-        output_code = expr1_code
-        output_code += expr2_code
         if var1.var_type.name == DecafTypes.int_type:
             output_code = MIPS.sub_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
     def add(self, tree):
-        var1_expr = tree.children[0]
-        var2_expr = tree.children[1]
-        expr1_code = self.visit(var1_expr)
-        expr2_code = self.visit(var2_expr)
-        var1 = stack.pop()
-        var2 = stack.pop()
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
-        output_code = expr1_code
-        output_code += expr2_code
         if var1.var_type.name == DecafTypes.int_type:
             output_code = MIPS.add_int
         stack.append(Variable(name=None, var_type=var1.var_type))

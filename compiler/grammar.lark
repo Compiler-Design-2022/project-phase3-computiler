@@ -65,7 +65,7 @@ continue_stmt: CONTINUE ";"
 
 print_stmt: PRINT "(" actuals ")" ";"
 
-?expr: l_value "=" expr -> expr_assign
+?expr: l_value "=" expr -> assign
     | expr0
 
 ?expr0: expr0 "||" expr1 -> boolean_or
