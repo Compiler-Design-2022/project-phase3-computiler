@@ -4,11 +4,15 @@ from compiler.mips_codes import MIPS
 from compiler.decaf_enums import Constants
 from compiler.semantic_error import SemanticError
 from compiler.symbol_table import Variable, SymbolTable, Type
+from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
 
 stack = []
 
 
 class CodeGenerator(Interpreter):
+    def add(self, tree):
+        pass
+
     def constant(self, tree):
         const_token_type = tree.children[0].type
         output_code = ''
@@ -33,6 +37,7 @@ class CodeGenerator(Interpreter):
 
 
 def prepare_main_tree(tree):
+    SymbolTableParentUpdater().visit_topdown(tree)
     tree.symbol_table = SymbolTable()
     tree.symbol_table.add_type(Type('int', 4))
     tree.symbol_table.add_type(Type('double', 8))
@@ -40,6 +45,7 @@ def prepare_main_tree(tree):
     tree.symbol_table.add_type(Type('void', 0))
     tree.symbol_table.add_type(Type('string', 8))
     tree.symbol_table.add_type(Type('array', 4))
+    SymbolTableUpdater().visit_topdown(tree)
 
 
 def generate(input_code):
