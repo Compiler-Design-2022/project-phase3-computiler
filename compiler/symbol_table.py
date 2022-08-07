@@ -1,5 +1,4 @@
-class SymbolTable:
-    pass
+from compiler.semantic_error import SemanticError
 
 
 class Type:
@@ -14,10 +13,9 @@ class Type:
 
 
 class Variable:
-    def __init__(self, name, var_type, size, address):
+    def __init__(self, name, var_type: Type, address=None):
         self.name = name
         self.var_type = var_type
-        self.size = size
         self.address = address
 
 
@@ -28,3 +26,23 @@ class Function:
         self.return_type = return_type
         self.address = address
         self.size = size
+
+
+class SymbolTable:
+    def __init__(self):
+        self.types = dict()
+        self.parent = None
+
+    def get_type(self, var_type, rise_error=True, is_arr_type=False):
+        if var_type in self.types.keys():
+            return self.types[var_type]
+        if self.parent:
+            return self.parent.get_type(var_type=var_type, rise_error=rise_error, is_arr_type=is_arr_type)
+        if rise_error:
+            raise SemanticError()
+
+    def add_type(self, var_type: Type):
+        if self.get_type(var_type=var_type.name, rise_error=False, is_arr_type=True):
+            raise SemanticError()
+        else:
+            self.types[var_type.name] = var_type
