@@ -37,11 +37,20 @@ class MIPS:
     		sw $t3, 4($sp) 
     		addi $sp, $sp, 4
             """
+
     assignment_int = """
             lw $t0, 0($sp)
     		lw $t1, 4($sp)
     		addi $sp, $sp, 4
     		sw $t0, 0($sp) 
+            """
+
+    module_int = """
+            lw $t0, 0($sp)
+			lw $t1, 4($sp)
+			div $t1, $t0
+			sw $hi, 4($sp) 
+			addi $sp, $sp, 4
             """
 
     semantic_error = """

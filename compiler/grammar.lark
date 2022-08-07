@@ -90,7 +90,7 @@ print_stmt: PRINT "(" actuals ")" ";"
 
 ?expr5: expr5 "*" expr6 -> mul
     | expr5 "/" expr6 -> div
-    | expr5 "%" expr6 -> mod
+    | expr5 "%" expr6 -> module
     | expr6
 
 ?expr6: "!" expr6 -> not_expr

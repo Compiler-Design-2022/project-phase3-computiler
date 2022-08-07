@@ -14,12 +14,21 @@ class CodeGenerator(Interpreter):
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
 
+    # add , sub, nul, div, assign
+    def module(self, tree):
+        var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
+        if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
+            raise SemanticError()
+        output_code += MIPS.module_int
+        var_type = tree.symbol_table.get_type('int')
+        stack.append(Variable(name=None, var_type=var_type))
+
     def assign(self, tree):
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(l_var, r_var):
             raise SemanticError()
         if l_var.var_type.name == DecafTypes.int_type:
-            output_code = MIPS.assignment_int
+            output_code += MIPS.assignment_int
         stack.append(l_var)
         return output_code
 
@@ -28,7 +37,7 @@ class CodeGenerator(Interpreter):
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
-            output_code = MIPS.div_int
+            output_code += MIPS.div_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -48,7 +57,7 @@ class CodeGenerator(Interpreter):
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
-            output_code = MIPS.mul_int
+            output_code += MIPS.mul_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -57,7 +66,7 @@ class CodeGenerator(Interpreter):
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
-            output_code = MIPS.sub_int
+            output_code += MIPS.sub_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -66,7 +75,7 @@ class CodeGenerator(Interpreter):
         if CodeGenerator.are_types_invalid(var1, var2):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
-            output_code = MIPS.add_int
+            output_code += MIPS.add_int
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -77,18 +86,18 @@ class CodeGenerator(Interpreter):
         if const_token_type == Constants.bool_const:
             value = int(tree.children[0].value)
             var_type = tree.symbol_table.get_type('bool')
-            output_code = MIPS.bool_const.format(value)
+            output_code += MIPS.bool_const.format(value)
         elif const_token_type == Constants.int_const:
             value = int(tree.children[0].value)
             var_type = tree.symbol_table.get_type('int')
-            output_code = MIPS.int_const.format(value)
+            output_code += MIPS.int_const.format(value)
         elif const_token_type == Constants.double_const:
             pass
         elif const_token_type == Constants.str_const:
             pass
         elif const_token_type == Constants.null_const:
             var_type = tree.symbol_table.get_type('null')
-            output_code = MIPS.null_const
+            output_code += MIPS.null_const
         stack.append(Variable(name=None, var_type=var_type))
         return output_code
 
