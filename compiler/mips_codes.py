@@ -86,4 +86,49 @@ class MIPS:
 				addi $sp, $sp, 4
                 """
 
+    logical_double_equal = """
+    		l.s $f2, 0($sp)
+    		l.s $f4, 4($sp)
+    		li $t0 , 0
+    		c.eq.s $f4, $f2
+    		bc1f d_eq_{}
+    		li $t0 , 1
+    	d_eq_{}:
+    		sw $t0, 4($sp)
+    		addi $sp, $sp, 4
+    		"""
+
+    logical_string_equal = """
+                    lw $s1, 0($sp)
+                    lw $s0, 4($sp)
+
+    				cmploop_{}:
+    					lb $t2,0($s0)
+    					lb $t3,0($s1)
+    					bne $t2,$t3,cmpne_{}
+
+    					beq $t2,$zero,cmpeq_{}
+    					beq $t3,$zero,cmpeq_{}
+
+    					addi $s0,$s0,1
+    					addi $s1,$s1,1
+
+    					j cmploop_{}
+
+    				cmpne_{}:
+    					li $t0,0
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					j end_{}
+
+    				cmpeq_{}:
+    					li $t0,1
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					j end_{}
+
+    				end_{}:
+
+    				"""
+
 

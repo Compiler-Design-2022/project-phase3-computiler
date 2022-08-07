@@ -12,6 +12,8 @@ from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParent
 stack = []
 
 class CodeGenerator(Interpreter):
+    VARIABLE_NAME_COUNT = 0
+
     @staticmethod
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
@@ -20,6 +22,10 @@ class CodeGenerator(Interpreter):
     def are_boolean(cls, *variables: List[Variable]):
         non_booleans = [i for i in variables if i.var_type.name != DecafTypes.bool_type]
         return bool(len(non_booleans))
+
+    @classmethod
+    def change_var(cls):
+        cls.VARIABLE_NAME_COUNT += 1
 
     def unary_neg(self, tree):
         output_code = self.visit(tree.children[0])
@@ -142,6 +148,13 @@ class CodeGenerator(Interpreter):
 
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
+
+    def logical_equal(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+
 
 
 
