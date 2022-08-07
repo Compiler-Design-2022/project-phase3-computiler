@@ -14,6 +14,54 @@ class CodeGenerator(Interpreter):
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
 
+    def div(self, tree):
+        var1_expr = tree.children[0]
+        var2_expr = tree.children[1]
+        expr1_code = self.visit(var1_expr)
+        expr2_code = self.visit(var2_expr)
+        var1 = stack.pop()
+        var2 = stack.pop()
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+        output_code = expr1_code
+        output_code += expr2_code
+        if var1.var_type.name == DecafTypes.int_type:
+            output_code = MIPS.div_int
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
+    def mul(self, tree):
+        var1_expr = tree.children[0]
+        var2_expr = tree.children[1]
+        expr1_code = self.visit(var1_expr)
+        expr2_code = self.visit(var2_expr)
+        var1 = stack.pop()
+        var2 = stack.pop()
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+        output_code = expr1_code
+        output_code += expr2_code
+        if var1.var_type.name == DecafTypes.int_type:
+            output_code = MIPS.mul_int
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
+    def sub(self, tree):
+        var1_expr = tree.children[0]
+        var2_expr = tree.children[1]
+        expr1_code = self.visit(var1_expr)
+        expr2_code = self.visit(var2_expr)
+        var1 = stack.pop()
+        var2 = stack.pop()
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+        output_code = expr1_code
+        output_code += expr2_code
+        if var1.var_type.name == DecafTypes.int_type:
+            output_code = MIPS.sub_int
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
     def add(self, tree):
         var1_expr = tree.children[0]
         var2_expr = tree.children[1]

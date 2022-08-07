@@ -16,6 +16,28 @@ class MIPS:
 			sw $t3, 4($sp) 
 			addi $sp, $sp, 4
             """
+    sub_int = """
+            lw $t1, 0($sp)
+			lw $t2, 4($sp)
+			sub $t3, $t1, $t2
+			sw $t3, 4($sp) 
+			addi $sp, $sp, 4
+            """
+    mul_int = """
+            lw $t1, 0($sp)
+			lw $t2, 4($sp)
+			mul $t3, $t1, $t2
+			sw $t3, 4($sp) 
+			addi $sp, $sp, 4
+            """
+    div_int = """
+            lw $t1, 0($sp)
+    		lw $t2, 4($sp)
+    		div $t3, $t1, $t2
+    		sw $t3, 4($sp) 
+    		addi $sp, $sp, 4
+            """
+
     semantic_error = """
     		.text
     		.globl main
