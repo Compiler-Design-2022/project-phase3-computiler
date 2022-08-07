@@ -94,7 +94,7 @@ print_stmt: PRINT "(" actuals ")" ";"
     | expr6
 
 ?expr6: "!" expr6 -> not_expr
-    | "-" expr6 -> neg
+    | "-" expr6 -> unary_neg
     | expr7
 
 ?expr7: constant

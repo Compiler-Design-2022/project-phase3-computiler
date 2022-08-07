@@ -53,6 +53,11 @@ class MIPS:
 			addi $sp, $sp, 4
             """
 
+    unary_neg_int = """
+            lw $t0, 0($sp)
+            sub $t0, $zero, $t0
+            sw $t0, 0($sp)
+            """
     semantic_error = """
     		.text
     		.globl main

@@ -1,7 +1,8 @@
-from lark import Lark, ParseError, Tree
+from lark import Lark, ParseError
 from lark.visitors import Interpreter
-from compiler.mips_codes import MIPS
+
 from compiler.decaf_enums import Constants, DecafTypes
+from compiler.mips_codes import MIPS
 from compiler.semantic_error import SemanticError
 from compiler.symbol_table import Variable, SymbolTable, Type
 from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
@@ -14,7 +15,19 @@ class CodeGenerator(Interpreter):
     def are_types_invalid(var1: Variable, var2: Variable):
         return var1.var_type.name != var2.var_type.name
 
-    # add , sub, nul, div, assign
+    def unary_neg(self, tree):
+        output_code = self.visit(tree.children[0])
+        var = stack.pop()
+        if var.var_type.name == DecafTypes.int_type:
+            output_code += MIPS.unary_neg_int
+            return output_code
+        elif var.var_type.name == DecafTypes.double_type:
+            # TODO: complete
+            return output_code
+        else:
+            raise SemanticError()
+
+    # add , sub, nul, div, assign, module, unary negative
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
         if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
