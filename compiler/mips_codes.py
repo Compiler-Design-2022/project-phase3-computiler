@@ -9,7 +9,13 @@ class MIPS:
 			addi $sp, $sp, -4
 			sw $zero, 0($sp)
             """
-
+    add_int = """
+            lw $t1, 0($sp)
+			lw $t2, 4($sp)
+			add $t3, $t1, $t2
+			sw $t3, 4($sp) 
+			addi $sp, $sp, 4
+            """
     semantic_error = """
     		.text
     		.globl main

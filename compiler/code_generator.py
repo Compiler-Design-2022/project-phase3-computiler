@@ -1,7 +1,7 @@
 from lark import Lark, ParseError
 from lark.visitors import Interpreter
 from compiler.mips_codes import MIPS
-from compiler.decaf_enums import Constants
+from compiler.decaf_enums import Constants, DecafTypes
 from compiler.semantic_error import SemanticError
 from compiler.symbol_table import Variable, SymbolTable, Type
 from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
@@ -10,8 +10,25 @@ stack = []
 
 
 class CodeGenerator(Interpreter):
+    @staticmethod
+    def are_types_invalid(var1: Variable, var2: Variable):
+        return var1.var_type.name != var2.var_type.name
+
     def add(self, tree):
-        pass
+        var1_expr = tree.children[0]
+        var2_expr = tree.children[1]
+        expr1_code = self.visit(var1_expr)
+        expr2_code = self.visit(var2_expr)
+        var1 = stack.pop()
+        var2 = stack.pop()
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+        output_code = expr1_code
+        output_code += expr2_code
+        if var1.var_type.name == DecafTypes.int_type:
+            output_code = MIPS.add_int
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
 
     def constant(self, tree):
         const_token_type = tree.children[0].type
