@@ -1,0 +1,2 @@
+def generate(code):
+    pass

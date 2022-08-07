@@ -1,22 +1,27 @@
-import logging
+import getopt
+import sys
+import code_generator
 
-from compiler.preprocessor import run_preprocess
-from compiler.yacc import parser
 
-
-def run(input_file_address: str) -> bool:
-    result = ''
-    with open(input_file_address) as input_file:
-        data = input_file.read()
-    data = run_preprocess(input_data=data)
-    logging.basicConfig(
-        level=logging.CRITICAL,
-    )
-    log = logging.getLogger()
+def main(argv):
+    input_file, output_file = '', ''
     try:
-        res = parser.parse(input=data, debug=True)
-        # return True
-        return "OK"
-    except SyntaxError as e:
-        return "Syntax Error"
-        #return False
+        opts, args = getopt.getopt(argv, "dhpsi:o:", ["ifile=", "ofile="])
+    except getopt.GetoptError:
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-i", "--ifile"):
+            input_file = arg
+        elif opt in ("-o", "--ofile"):
+            output_file = arg
+
+    with open(input_file, "r") as input_file_data:
+        code = input_file_data.read()
+    output_file = open(output_file, "w")
+    mips_code = code_generator.generate(code)
+    output_file.write(mips_code)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
