@@ -152,6 +152,12 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
+    def read_int(self, tree):
+        output_code = MIPS.read
+        var_type = tree.symbol_table.get_type('int')
+        GlobalVariables.STACK.append(Variable(name=None, var_type=var_type))
+        return output_code
+
     def constant(self, tree):
         const_token_type = tree.children[0].type
         output_code = ''

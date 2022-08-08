@@ -102,7 +102,7 @@ print_stmt: PRINT "(" actuals ")" ";"
 
 ?expr7: constant
     | "NewArray" "(" expr "," type ")" -> new_array
-    | "ReadInteger" "(" ")" -> read_integer
+    | "ReadInteger" "(" ")" -> read_int
     | "ReadLine" "(" ")" -> read_line
     | NEW IDENT -> new_ident
     | "(" expr ")"

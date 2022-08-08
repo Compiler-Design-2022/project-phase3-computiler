@@ -69,6 +69,12 @@ class MIPS:
             sub $t0, $zero, $t0
             sw $t0, 0($sp)
             """
+    read = """
+        addi $v0, $zero, 5
+        syscall
+        addi $sp, $sp, -4
+        sw $v0, 0($sp)
+    """
     semantic_error = """
     		.text
     		.globl main
