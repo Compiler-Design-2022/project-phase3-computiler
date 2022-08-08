@@ -285,6 +285,46 @@ class MIPS:
 			sw $t0, {}($gp)
 			"""
 
+    function = """
+		{}:
+			sw $fp, -4($sp)
+			addi $fp, $sp, -4	# new frame pointer
+
+			sw $ra, -4($fp)
+			sw $s0, -8($fp)
+			sw $s1, -12($fp)
+			sw $s2, -16($fp)
+			sw $s3, -20($fp)
+			sw $s4, -24($fp)
+			sw $s5, -28($fp)
+			sw $s6, -32($fp)
+			sw $s7, -36($fp)
+
+			addi $sp, $sp, -36
+
+			{}
+
+			{}
+			
+		{}_end:
+
+			lw $ra, -4($fp)
+			lw $s0, -8($fp)
+			lw $s1, -12($fp)
+			lw $s2, -16($fp)
+			lw $s3, -20($fp)
+			lw $s4, -24($fp)
+			lw $s5, -28($fp)
+			lw $s6, -32($fp)
+			lw $s7, -36($fp)
+
+			addi $sp, $fp, 4  
+
+			lw $fp, 0($fp)
+
+			jr $ra
+		"""
+
 
 class MIPSDouble:
     unary_neg_double = """

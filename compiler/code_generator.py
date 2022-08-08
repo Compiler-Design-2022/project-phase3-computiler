@@ -331,8 +331,8 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def function(self, tree):
-        var_0, var_1, var_2, var_3 = tree.children[:4]
-        new_type = self.visit(var_0) if isinstance(var_0, Tree) else Type('void')
+        _, var_1, var_2, var_3 = tree.children[:4]
+        # new_type = self.visit(var_0) if isinstance(var_0, Tree) else Type('void')
         function_name = var_1.value
         function = tree.symbol_table.get_function(function_name, tree=tree)
         self.visit(var_2)
@@ -345,6 +345,14 @@ class CodeGenerator(Interpreter):
 
         stmt_block = self.visit(var_3)
 
+        function_stack.pop()
+
+        return MIPS.function.format(
+            function.label,
+            formal,
+            stmt_block,
+            function.label
+        )
 
 
 
