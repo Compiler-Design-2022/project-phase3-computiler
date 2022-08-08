@@ -263,3 +263,42 @@ class MIPSStr:
 					addi $sp, $sp, 4
 					"""
 
+    logical_greater_than_int = """
+					lw $t1, 0($sp)
+					lw $t0, 4($sp)
+					sgt $t2, $t0, $t1
+					sw $t2, 4($sp) 
+					addi $sp, $sp, 4
+					"""
+
+    logical_greater_than_double = """
+					l.s $f2, 0($sp)
+					l.s $f4, 4($sp)
+					li $t0 , 0
+					c.lt.s $f2, $f4
+					bc1f d_gt_{}
+					li $t0 , 1
+				d_gt_{}:
+					sw $t0, 4($sp)
+					addi $sp, $sp, 4
+					"""
+
+    logical_greater_than_or_equal_int = """
+					lw $t1, 0($sp)
+					lw $t0, 4($sp)
+					sge $t2, $t0, $t1
+					sw $t2, 4($sp) 
+					addi $sp, $sp, 4
+					"""
+    logical_greater_than_or_equal_double = """
+					l.s $f2, 0($sp)
+					l.s $f4, 4($sp)
+					li $t0 , 0
+					c.le.s $f2, $f4
+					bc1f d_ge_{}
+					li $t0 , 1
+				d_ge_{}:
+					sw $t0, 4($sp)
+					addi $sp, $sp, 4
+					"""
+
