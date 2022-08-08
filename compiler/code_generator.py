@@ -152,8 +152,42 @@ class CodeGenerator(Interpreter):
     def logical_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
-        if CodeGenerator.are_types_invalid(var1, var2):
+        # if CodeGenerator.are_types_invalid(var1, var2):
+        #     raise SemanticError()
+
+
+        if var1.var_type == DecafTypes.double_type:
+            CodeGenerator.change_var()
+            output_code += MIPS.set_multiple_var(
+                MIPS.logical_double_equal,
+                str(CodeGenerator.VARIABLE_NAME_COUNT),
+                2
+            )
+
+        elif var1.var_type == DecafTypes.str_type:
+            CodeGenerator.change_var()
+            output_code += MIPS.set_multiple_var(
+                MIPS.logical_string_equal,
+                str(CodeGenerator.VARIABLE_NAME_COUNT),
+                10
+            )
+
+        unknown_equal = bool((not (var1.type_.name == 'null' and var2.type_.name == 'null')) and\
+			(var1.type_.name == var2.type_.name or\
+			(var1.type_.name == 'null' and var2.type_.name not in ['double', 'int', 'bool', 'string', 'array']) or\
+			(var2.type_.name == 'null' and var1.type_.name not in ['double', 'int', 'bool', 'string', 'array'])))
+
+        if unknown_equal:
+            output_code += MIPS.logical_unknown_equal
+
+        else:
             raise SemanticError()
+
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
+
+
 
 
 

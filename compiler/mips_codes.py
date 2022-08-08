@@ -1,4 +1,14 @@
 class MIPS:
+
+    @staticmethod
+    def set_multiple_var(base_mips: str, value: str, count=1):
+        while True:
+            try:
+                return base_mips.format(*list([value] * count))
+            except:
+                count += 1
+                continue
+
     bool_const = """
             li $t0, {value}
             addi $sp, $sp, -4
@@ -130,5 +140,13 @@ class MIPS:
     				end_{}:
 
     				"""
+
+    logical_unknown_equal = """
+    		lw $t1, 0($sp)
+    		lw $t0, 4($sp)
+    		seq $t2, $t0, $t1
+    		sw $t2, 4($sp) 
+    		addi $sp, $sp, 4
+    		"""
 
 
