@@ -328,6 +328,9 @@ class CodeGenerator(Interpreter):
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
+    def function(self, tree):
+
+
 
 
 

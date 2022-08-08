@@ -32,6 +32,7 @@ class SymbolTable:
     def __init__(self):
         self.types = dict()
         self.parent = None
+        self.functions = {}
 
     def get_type(self, var_type, rise_error=True, is_arr_type=False):
         if var_type in self.types.keys():
@@ -46,3 +47,14 @@ class SymbolTable:
             raise SemanticError()
         else:
             self.types[var_type.name] = var_type
+
+    def get_function(self, func_name, tree=None, rise_error=True, depth=1):
+        if self.parent and depth == 1:
+            return self.parent.find_func(func_name, tree, rise_error)
+
+        if func_name in self.functions:
+            return self.functions.get(func_name, SemanticError())
+
+        if rise_error:
+            raise SemanticError()
+        return None
