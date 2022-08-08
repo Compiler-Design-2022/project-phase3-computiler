@@ -203,4 +203,24 @@ class MIPS:
 					addi $sp, $sp, 4
 					"""
 
+    logical_less_than_int = """
+					lw $t1, 0($sp)
+					lw $t0, 4($sp)
+					slt $t2, $t0, $t1
+					sw $t2, 4($sp) 
+					addi $sp, $sp, 4
+					"""
+
+    logical_less_than_double = """
+					l.s $f2, 0($sp)
+					l.s $f4, 4($sp)
+					li $t0 , 0
+					c.lt.s $f4, $f2
+					bc1f d_lt_{}
+					li $t0 , 1
+				d_lt_{}:
+					sw $t0, 4($sp)
+					addi $sp, $sp, 4
+					"""
+
 
