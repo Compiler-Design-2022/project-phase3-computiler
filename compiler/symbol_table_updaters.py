@@ -1,4 +1,5 @@
-from lark import Interpreter, Tree, Visitor
+from lark.visitors import Interpreter
+from lark import Tree, Visitor
 
 
 class SymbolTableUpdater(Interpreter):

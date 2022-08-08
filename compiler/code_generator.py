@@ -1,10 +1,10 @@
 from typing import List
 
-from lark import Lark, ParseError
+from lark import Lark, ParseError, Tree
 from lark.visitors import Interpreter
 
 from compiler.decaf_enums import Constants, DecafTypes
-from compiler.mips_codes import MIPS
+from compiler.mips_codes import MIPS, MIPSDouble
 from compiler.semantic_error import SemanticError
 from compiler.symbol_table import Variable, SymbolTable, Type
 from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
@@ -12,6 +12,15 @@ from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParent
 stack = []
 
 class CodeGenerator(Interpreter):
+    def stmt_block(self, tree):
+        children_codes = self.visit_children(tree)
+        codes = []
+        for child_code in children_codes:
+            if child_code:
+                codes.append(child_code)
+        return '\n'.join(codes)
+
+    # math
     VARIABLE_NAME_COUNT = 0
 
     @staticmethod
@@ -32,14 +41,14 @@ class CodeGenerator(Interpreter):
         var = stack.pop()
         if var.var_type.name == DecafTypes.int_type:
             output_code += MIPS.unary_neg_int
-            return output_code
         elif var.var_type.name == DecafTypes.double_type:
-            # TODO: complete
-            return output_code
+            output_code += MIPSDouble.unary_neg_double
         else:
             raise SemanticError()
+        stack.append(var)
+        return output_code
 
-    # add , sub, nul, div, assign, module, unary negative
+    # module, unary negative
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
         if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
@@ -101,6 +110,11 @@ class CodeGenerator(Interpreter):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.add_int
+        elif var1.var_type.name == DecafTypes.double_type:
+            output_code += MIPSDouble.add
+        elif var1.var_type.name == DecafTypes.str_type:
+            output_code += MIPS
+
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -111,11 +125,11 @@ class CodeGenerator(Interpreter):
         if const_token_type == Constants.bool_const:
             value = int(tree.children[0].value)
             var_type = tree.symbol_table.get_type('bool')
-            output_code += MIPS.bool_const.format(value)
+            output_code += MIPS.bool_const.format(value=value)
         elif const_token_type == Constants.int_const:
             value = int(tree.children[0].value)
             var_type = tree.symbol_table.get_type('int')
-            output_code += MIPS.int_const.format(value)
+            output_code += MIPS.int_const.format(value=value)
         elif const_token_type == Constants.double_const:
             pass
         elif const_token_type == Constants.str_const:
@@ -274,7 +288,7 @@ def generate(input_code):
     try:
         tree = parser.parse(input_code)
         prepare_main_tree(tree)
-        mips_code = CodeGenerator.visit(tree)
+        mips_code = CodeGenerator().visit(tree)
     except ParseError as e:
         return e
     except SemanticError:

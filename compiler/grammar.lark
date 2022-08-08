@@ -1,6 +1,9 @@
 ?start: program
 
-program: decl+
+program: macro* decl+
+
+?macro: IMPORT STRINGCONSTANT
+    | DEFINE IDENT*
 
 ?decl: variable_decl
     | function_decl
@@ -39,7 +42,7 @@ interface_decl: INTERFACE IDENT "{" prototype* "}"
 prototype: type IDENT "(" formals ")" ";"
     | VOID IDENT "(" formals ")" ";"
 
-statement_block: "{" variable_decl* statement* "}"
+statement_block: "{" variable_decl* statement* "}" -> stmt_block
 
 ?statement: expr? ";"
     | if_stmt
@@ -136,6 +139,8 @@ constant: INTCONSTANT
 EXTENDS: "extends"
 IMPLEMENTS: "implements"
 CLASS: "class"
+IMPORT: "import"
+DEFINE: "define"
 INT: "int"
 BOOL: "bool"
 DOUBLE: "double"

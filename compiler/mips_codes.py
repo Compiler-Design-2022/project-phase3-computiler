@@ -80,6 +80,27 @@ class MIPS:
     		errorMsg: .asciiz "Semantic Error"
     		"""
 
+
+class MIPSDouble:
+    unary_neg_double = """
+        l.s $f0, 0($sp)
+        neg.s $f0, $f0
+        s.s $f0, 0($sp)
+    """
+    add = """
+        l.s $f0, 0($sp)
+        l.s $f1, 4($sp)
+        add.s $f2, $f0, $f1
+        addi $sp, $sp, 4
+        s.s $f2, 0($sp)
+    """
+
+
+class MIPSStr:
+    concat = """
+        
+    """
+
     logical_or = """
     			lw $t1, 0($sp)
 				lw $t0, 4($sp)
