@@ -244,4 +244,22 @@ class MIPSStr:
 					addi $sp, $sp, 4
 					"""
 
+    logical_less_than_or_equal_int = """
+					lw $t1, 0($sp)
+					lw $t0, 4($sp)
+					sle $t2, $t0, $t1
+					sw $t2, 4($sp) 
+					addi $sp, $sp, 4
+					"""
+    logical_less_than_or_equal_double = """
+					l.s $f2, 0($sp)
+					l.s $f4, 4($sp)
+					li $t0 , 0
+					c.le.s $f4, $f2
+					bc1f d_le_{}
+					li $t0 , 1
+				d_le_{}:
+					sw $t0, 4($sp)
+					addi $sp, $sp, 4
+					"""
 
