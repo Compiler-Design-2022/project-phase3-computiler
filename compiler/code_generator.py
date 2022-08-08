@@ -282,6 +282,29 @@ class CodeGenerator(Interpreter):
         stack.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
+    def logical_greater_than(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+
+        if var1.var_type.name == DecafTypes.int_type:
+            output_code += MIPS.logical_greater_than_int
+
+        elif var1.var_type.name == DecafTypes.double_type:
+            CodeGenerator.change_var()
+            output_code += MIPS.set_multiple_var(
+                MIPS.logical_greater_than_double,
+                str(CodeGenerator.VARIABLE_NAME_COUNT),
+                2
+            )
+
+        else:
+            raise SemanticError()
+
+        stack.append(Variable(name=None, var_type=var1.var_type))
+        return output_code
+
 
 
 
