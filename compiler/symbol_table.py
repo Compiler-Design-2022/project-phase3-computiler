@@ -13,7 +13,7 @@ class Type:
 
 
 class Variable:
-    def __init__(self, name, var_type: Type, address=None):
+    def __init__(self, var_type: Type, address=None, name=None):
         self.name = name
         self.var_type = var_type
         self.address = address

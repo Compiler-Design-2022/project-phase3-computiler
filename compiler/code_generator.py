@@ -79,7 +79,7 @@ class CodeGenerator(Interpreter):
             raise SemanticError()
         output_code += MIPS.module_int
         var_type = tree.symbol_table.get_type('int')
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var_type))
 
     def assign(self, tree):
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
@@ -98,7 +98,7 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.div_int
         elif var1.var_type.name == DecafTypes.double_type:
             output_code += MIPSDouble.div
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def prepare_calculations(self, tree):
@@ -124,7 +124,7 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.mul_int
         elif var1.var_type.name == DecafTypes.double_type:
             output_code += MIPSDouble.mul
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def sub(self, tree):
@@ -135,7 +135,7 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.sub_int
         elif var1.var_type.name == DecafTypes.double_type:
             output_code += MIPSDouble.sub
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def add(self, tree):
@@ -149,13 +149,22 @@ class CodeGenerator(Interpreter):
         elif var1.var_type.name == DecafTypes.str_type:
             CodeGenerator.change_var()
             output_code += MIPSStr.concat.format(version=CodeGenerator.VARIABLE_NAME_COUNT)
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
+        return output_code
+
+    def read_line(self, tree):
+        output_code = ''
+        GlobalVariables.STACK.append(
+            Variable(
+                var_type=tree.symbol_table.get_type(DecafTypes.str_type)
+            )
+        )
         return output_code
 
     def read_int(self, tree):
         output_code = MIPS.read
-        var_type = tree.symbol_table.get_type('int')
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var_type))
+        var_type = tree.symbol_table.get_type(DecafTypes.int_type)
+        GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
     def constant(self, tree):
@@ -177,7 +186,7 @@ class CodeGenerator(Interpreter):
         elif const_token_type == Constants.null_const:
             var_type = tree.symbol_table.get_type('null')
             output_code += MIPS.null_const
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
     # logical functions or, and, equal, not_equal, less than, equal_or_less_than, greater_than, equal_or_greater_than,
@@ -189,7 +198,7 @@ class CodeGenerator(Interpreter):
 
         output_code += MIPS.logical_or
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_and(self, tree):
@@ -200,7 +209,7 @@ class CodeGenerator(Interpreter):
 
         output_code += MIPS.logical_and
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_equal(self, tree):
@@ -238,7 +247,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_not_equal(self, tree):
@@ -273,7 +282,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_less_than(self, tree):
@@ -296,7 +305,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_less_than_or_equal(self, tree):
@@ -319,7 +328,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_greater_than(self, tree):
@@ -342,7 +351,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def logical_greater_than_or_equal(self, tree):
@@ -365,7 +374,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
     def declare_function(self, tree):
