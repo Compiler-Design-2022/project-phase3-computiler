@@ -280,6 +280,11 @@ class MIPS:
     					addi $sp, $sp, 4
     					"""
 
+    function_formal = """
+			lw $t0, {}($fp)
+			sw $t0, {}($gp)
+			"""
+
 
 class MIPSDouble:
     unary_neg_double = """

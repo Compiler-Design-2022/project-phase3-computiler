@@ -10,6 +10,8 @@ from compiler.symbol_table import Variable, SymbolTable, Type
 from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
 
 stack = []
+function_stack = []
+
 
 class CodeGenerator(Interpreter):
     def stmt_block(self, tree):
@@ -329,14 +331,19 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def function(self, tree):
+        var_0, var_1, var_2, var_3 = tree.children[:4]
+        new_type = self.visit(var_0) if isinstance(var_0, Tree) else Type('void')
+        function_name = var_1.value
+        function = tree.symbol_table.get_function(function_name, tree=tree)
+        self.visit(var_2)
 
+        formal = ''
+        for index, val in enumerate(function.formals[::-1]):
+            formal += MIPS.function_formal.format(4 * (index + 1), val.address)
 
+        function_stack.append(function)
 
-
-
-
-
-
+        stmt_block = self.visit(var_3)
 
 
 

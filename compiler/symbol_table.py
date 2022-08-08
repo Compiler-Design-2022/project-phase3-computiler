@@ -2,7 +2,7 @@ from compiler.semantic_error import SemanticError
 
 
 class Type:
-    def __init__(self, name, size):
+    def __init__(self, name, size=None):
         self.name = name
         self.size = size
 
@@ -51,7 +51,6 @@ class SymbolTable:
     def get_function(self, func_name, tree=None, rise_error=True, depth=1):
         if self.parent and depth == 1:
             return self.parent.find_func(func_name, tree, rise_error)
-
         if func_name in self.functions:
             return self.functions.get(func_name, SemanticError())
 
