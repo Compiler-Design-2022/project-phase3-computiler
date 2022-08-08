@@ -223,6 +223,13 @@ class CodeGenerator(Interpreter):
         return output_code
 
 
+    def logical_less_than(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+
+        if CodeGenerator.are_types_invalid(var1, var2):
+            raise SemanticError()
+
+
 
 
 
