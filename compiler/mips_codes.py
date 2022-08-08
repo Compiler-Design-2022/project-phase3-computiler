@@ -52,6 +52,7 @@ class MIPS:
             lw $t0, 0($sp)
     		lw $t1, 4($sp)
     		addi $sp, $sp, 4
+    		sw $t0, 0($t1)
     		sw $t0, 0($sp) 
             """
 
@@ -410,9 +411,70 @@ class MIPSDouble:
         s.s $f2, 0($sp)
     """
 
+    sub = """
+        l.s $f0, 0($sp)
+        l.s $f1, 4($sp)
+        sub.s $f2, $f0, $f1
+        addi $sp, $sp, 4
+        s.s $f2, 0($sp)
+    """
+
+    mul = """
+        l.s $f1, 0($sp)
+		l.s $f2, 4($sp)
+		mul.s $f0, $f1, $f2
+		s.s $f0, 4($sp) 
+		addi $sp, $sp, 4
+    """
+
+    div = """
+        l.s $f1, 0($sp)
+		l.s $f2, 4($sp)
+		div.s $f0, $f1, $f2
+		s.s $f0, 4($sp) 
+		addi $sp, $sp, 4
+    """
+
 
 class MIPSStr:
     concat = """
+        lw $s0, 0($sp)
+        lw $s1, 4($sp)
         
+        mov $a0, $s0
+        mov $s2, $ra
+        jal str_len
+        mov $ra, $s2
+        mov $t0, $v0
+        
+        mov $a0, $s1
+        mov $s2, $ra
+        jal str_len
+        mov $ra, $s2
+        add $t0, $t0, $v0
+        addi $t0, $t0, 1
+        
+        li $v0, 9
+		move $a0, $t0
+		syscall
+		mov $s2, $v0
+		addi $sp, $sp, 4
+		sw $s2, 0($sp)
+		add_str1_{version}:
+		lb $t0, 0($s0)
+		beq $t0, $zero, add_str2_{version}
+		sb $t0, 0($s2)
+		addi $s0, $s0, 1
+		addi $s2, $s2, 1
+		j add_str1_{version}
+		
+		add_str2_{version}:
+		lb $t1, 0($s1)
+		beq $t1, $zero, end_str_concat_{version}
+		sb $t1, 0($s2)
+		addi $s1, $s1, 1
+		addi $s2, $s2, 1
+		j add_str2_{version}
+		
+		end_str_concat_{version}:
     """
-

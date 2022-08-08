@@ -1,11 +1,11 @@
 from typing import List
 
-from lark import Lark, ParseError, Tree
+from lark import Lark, ParseError
 from lark.visitors import Interpreter
 
 from compiler.decaf_enums import Constants, DecafTypes
 from compiler.globals import GlobalVariables
-from compiler.mips_codes import MIPS, MIPSDouble
+from compiler.mips_codes import MIPS, MIPSDouble, MIPSStr
 from compiler.semantic_error import SemanticError
 from compiler.symbol_table import Variable, SymbolTable, Type
 from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
@@ -92,11 +92,13 @@ class CodeGenerator(Interpreter):
 
     def div(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
-        if CodeGenerator.are_types_invalid(var1, var2):
+        if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.div_int
-        stack.append(Variable(name=None, var_type=var1.var_type))
+        elif var1.var_type.name == DecafTypes.double_type:
+            output_code += MIPSDouble.div
+        GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
     def prepare_calculations(self, tree):
@@ -110,21 +112,29 @@ class CodeGenerator(Interpreter):
         output_code += expr2_code
         return var1, var2, expr1_code, expr2_code, output_code
 
+    @staticmethod
+    def is_var_int_or_double(var: Variable):
+        return var.var_type.name in (DecafTypes.double_type, DecafTypes.int_type)
+
     def mul(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
-        if CodeGenerator.are_types_invalid(var1, var2):
+        if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.mul_int
+        elif var1.var_type.name == DecafTypes.double_type:
+            output_code += MIPSDouble.mul
         GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
     def sub(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
-        if CodeGenerator.are_types_invalid(var1, var2):
+        if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
             raise SemanticError()
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.sub_int
+        elif var1.var_type.name == DecafTypes.double_type:
+            output_code += MIPSDouble.sub
         GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
@@ -137,8 +147,8 @@ class CodeGenerator(Interpreter):
         elif var1.var_type.name == DecafTypes.double_type:
             output_code += MIPSDouble.add
         elif var1.var_type.name == DecafTypes.str_type:
-            output_code += MIPS
-
+            CodeGenerator.change_var()
+            output_code += MIPSStr.concat.format(version=CodeGenerator.VARIABLE_NAME_COUNT)
         GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
 
