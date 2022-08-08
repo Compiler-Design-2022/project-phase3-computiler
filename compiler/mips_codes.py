@@ -325,6 +325,76 @@ class MIPS:
 			jr $ra
 		"""
 
+    main = """
+		main:
+			{}
+			{}
+
+			jal func_main
+
+			li $v0, 10
+			syscall
+
+		"""
+
+    side_functions = """
+		print_bool: 
+			beq $a0, $zero, print_bool_false
+			b print_bool_true
+
+		print_bool_false:
+			la $a0, falseStr
+			li $v0, 4
+			syscall
+			b print_bool_end
+
+		print_bool_true:
+			la $a0, trueStr
+			li $v0, 4
+			syscall
+			b print_bool_end
+
+		print_bool_end:
+			jr $ra
+
+
+		string_length: 
+			li $v0, 0
+			move $t1, $a0
+		
+		string_length_begin:
+			lb $t2, 0($t1)
+			beq $t2, $zero, string_length_end
+			addi $v0, $v0, 1
+			addi $t1, $t1, 1
+			b string_length_begin
+
+		string_length_end:
+			jr $ra
+
+		runtimeError:
+			la $a0, runtimeErrorStr
+			li $v0, 4	# sys call for print string
+			syscall
+
+			li $v0, 10
+			syscall
+
+		"""
+
+    data_segment = """
+		.data
+
+		runtimeErrorStr: .asciiz "RUNTIME ERROR"
+		falseStr: .asciiz "false"
+		trueStr: .asciiz "true"
+		newLineStr: .asciiz "\\n"
+		"""
+
+    constant_str = "constantStr_{}: .asciiz \"{}\"\n"
+
+    array_base = "array_{}: .word \"{}\"\n"
+
 
 class MIPSDouble:
     unary_neg_double = """

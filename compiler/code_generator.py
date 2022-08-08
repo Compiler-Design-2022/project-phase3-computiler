@@ -22,8 +22,30 @@ class CodeGenerator(Interpreter):
                 codes.append(child_code)
         return '\n'.join(codes)
 
-    def declare_program(self):
-        pass
+    def declare_program(self, tree):
+        variables = [item for item in tree.children if item.data == 'variable']
+        functions = [item for item in tree.children if item.data == 'function_decl']
+        classes = [item for item in tree.children if item.data == 'class_decl']
+
+        result = "\n.text"
+
+        for item in list(*variables, *functions, *classes):
+            result += self.visit(item)
+
+        result += MIPS.main.format(GlobalVariables.CLASS_INIT, GlobalVariables.VAR_INIT)
+        result += MIPS.side_functions
+        segment_code = MIPS.data_segment
+
+        for index, item in GlobalVariables.CONSTANTS:
+            segment_code += MIPS.constant_str.format(index, item)
+        segment_code += '\n'
+        for index, item in GlobalVariables.ARRAYS:
+            segment_code += MIPS.array_base.format(index, item)
+        segment_code += '\n'
+
+        result = segment_code + result
+
+        return result
 
     @staticmethod
     def are_types_invalid(var1: Variable, var2: Variable):
@@ -171,7 +193,6 @@ class CodeGenerator(Interpreter):
         # if CodeGenerator.are_types_invalid(var1, var2):
         #     raise SemanticError()
 
-
         if var1.var_type == DecafTypes.double_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
@@ -188,10 +209,12 @@ class CodeGenerator(Interpreter):
                 10
             )
 
-        unknown_equal = bool((not (var1.type_.name == 'null' and var2.type_.name == 'null')) and\
-			(var1.type_.name == var2.type_.name or\
-			(var1.type_.name == 'null' and var2.type_.name not in ['double', 'int', 'bool', 'string', 'array']) or\
-			(var2.type_.name == 'null' and var1.type_.name not in ['double', 'int', 'bool', 'string', 'array'])))
+        unknown_equal = bool((not (var1.type_.name == 'null' and var2.type_.name == 'null')) and \
+                             (var1.type_.name == var2.type_.name or \
+                              (var1.type_.name == 'null' and var2.type_.name not in ['double', 'int', 'bool', 'string',
+                                                                                     'array']) or \
+                              (var2.type_.name == 'null' and var1.type_.name not in ['double', 'int', 'bool', 'string',
+                                                                                     'array'])))
 
         if unknown_equal:
             output_code += MIPS.logical_unknown_equal
@@ -201,7 +224,6 @@ class CodeGenerator(Interpreter):
 
         GlobalVariables.STACK.append(Variable(name=None, var_type=var1.var_type))
         return output_code
-
 
     def logical_not_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
@@ -353,10 +375,6 @@ class CodeGenerator(Interpreter):
             stmt_block,
             function.label
         )
-
-
-
-
 
 
 def prepare_main_tree(tree):
