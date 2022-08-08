@@ -80,6 +80,206 @@ class MIPS:
     		errorMsg: .asciiz "Semantic Error"
     		"""
 
+    logical_or = """
+        			lw $t1, 0($sp)
+    				lw $t0, 4($sp)
+    				or $t2, $t0, $t1
+    				sw $t2, 4($sp) 
+    				addi $sp, $sp, 4
+                    """
+
+    logical_and = """
+    				lw $t1, 0($sp)
+    				lw $t0, 4($sp)
+    				and $t2, $t0, $t1
+    				sw $t2, 4($sp) 
+    				addi $sp, $sp, 4
+                    """
+
+    logical_double_equal = """
+        		l.s $f2, 0($sp)
+        		l.s $f4, 4($sp)
+        		li $t0 , 0
+        		c.eq.s $f4, $f2
+        		bc1f d_eq_{}
+        		li $t0 , 1
+        	d_eq_{}:
+        		sw $t0, 4($sp)
+        		addi $sp, $sp, 4
+        		"""
+
+    logical_string_equal = """
+                        lw $s1, 0($sp)
+                        lw $s0, 4($sp)
+
+        				cmploop_{}:
+        					lb $t2,0($s0)
+        					lb $t3,0($s1)
+        					bne $t2,$t3,cmpne_{}
+
+        					beq $t2,$zero,cmpeq_{}
+        					beq $t3,$zero,cmpeq_{}
+
+        					addi $s0,$s0,1
+        					addi $s1,$s1,1
+
+        					j cmploop_{}
+
+        				cmpne_{}:
+        					li $t0,0
+        					sw $t0, 4($sp)
+        					addi $sp, $sp, 4
+        					j end_{}
+
+        				cmpeq_{}:
+        					li $t0,1
+        					sw $t0, 4($sp)
+        					addi $sp, $sp, 4
+        					j end_{}
+
+        				end_{}:
+
+        				"""
+
+    logical_unknown_equal = """
+        		lw $t1, 0($sp)
+        		lw $t0, 4($sp)
+        		seq $t2, $t0, $t1
+        		sw $t2, 4($sp) 
+        		addi $sp, $sp, 4
+        		"""
+
+    logical_double_not_equal = """
+    					l.s $f2, 0($sp)
+    					l.s $f4, 4($sp)
+    					li $t0 , 1
+    					c.eq.s $f4, $f2
+    					bc1f d_neq_{}
+    					li $t0 , 0
+    				d_neq_{}:
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_sring_not_equal = """
+    					### not_equal string
+    					lw $s1, 0($sp)
+    					lw $s0, 4($sp)
+
+    				cmploop_{}:
+    					lb $t2,0($s0)
+    					lb $t3,0($s1)
+    					bne $t2,$t3,cmpne_{}
+
+    					beq $t2,$zero,cmpeq_{}
+    					beq $t3,$zero,cmpeq_{}
+
+    					addi $s0,$s0,1
+    					addi $s1,$s1,1
+
+    					j cmploop_{}
+
+    				cmpne_{}:
+    					li $t0,1
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					j end_{}
+
+    				cmpeq_{}:
+    					li $t0,0
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					j end_{}
+
+    				end_{}:
+
+    				"""
+    logical_unknown_not_equal = """
+    					lw $t1, 0($sp)
+    					lw $t0, 4($sp)
+    					sne $t2, $t0, $t1
+    					sw $t2, 4($sp) 
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_less_than_int = """
+    					lw $t1, 0($sp)
+    					lw $t0, 4($sp)
+    					slt $t2, $t0, $t1
+    					sw $t2, 4($sp) 
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_less_than_double = """
+    					l.s $f2, 0($sp)
+    					l.s $f4, 4($sp)
+    					li $t0 , 0
+    					c.lt.s $f4, $f2
+    					bc1f d_lt_{}
+    					li $t0 , 1
+    				d_lt_{}:
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_less_than_or_equal_int = """
+    					lw $t1, 0($sp)
+    					lw $t0, 4($sp)
+    					sle $t2, $t0, $t1
+    					sw $t2, 4($sp) 
+    					addi $sp, $sp, 4
+    					"""
+    logical_less_than_or_equal_double = """
+    					l.s $f2, 0($sp)
+    					l.s $f4, 4($sp)
+    					li $t0 , 0
+    					c.le.s $f4, $f2
+    					bc1f d_le_{}
+    					li $t0 , 1
+    				d_le_{}:
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_greater_than_int = """
+    					lw $t1, 0($sp)
+    					lw $t0, 4($sp)
+    					sgt $t2, $t0, $t1
+    					sw $t2, 4($sp) 
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_greater_than_double = """
+    					l.s $f2, 0($sp)
+    					l.s $f4, 4($sp)
+    					li $t0 , 0
+    					c.lt.s $f2, $f4
+    					bc1f d_gt_{}
+    					li $t0 , 1
+    				d_gt_{}:
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					"""
+
+    logical_greater_than_or_equal_int = """
+    					lw $t1, 0($sp)
+    					lw $t0, 4($sp)
+    					sge $t2, $t0, $t1
+    					sw $t2, 4($sp) 
+    					addi $sp, $sp, 4
+    					"""
+    logical_greater_than_or_equal_double = """
+    					l.s $f2, 0($sp)
+    					l.s $f4, 4($sp)
+    					li $t0 , 0
+    					c.le.s $f2, $f4
+    					bc1f d_ge_{}
+    					li $t0 , 1
+    				d_ge_{}:
+    					sw $t0, 4($sp)
+    					addi $sp, $sp, 4
+    					"""
+
 
 class MIPSDouble:
     unary_neg_double = """
@@ -100,205 +300,4 @@ class MIPSStr:
     concat = """
         
     """
-
-    logical_or = """
-    			lw $t1, 0($sp)
-				lw $t0, 4($sp)
-				or $t2, $t0, $t1
-				sw $t2, 4($sp) 
-				addi $sp, $sp, 4
-                """
-
-    logical_and = """
-				lw $t1, 0($sp)
-				lw $t0, 4($sp)
-				and $t2, $t0, $t1
-				sw $t2, 4($sp) 
-				addi $sp, $sp, 4
-                """
-
-    logical_double_equal = """
-    		l.s $f2, 0($sp)
-    		l.s $f4, 4($sp)
-    		li $t0 , 0
-    		c.eq.s $f4, $f2
-    		bc1f d_eq_{}
-    		li $t0 , 1
-    	d_eq_{}:
-    		sw $t0, 4($sp)
-    		addi $sp, $sp, 4
-    		"""
-
-    logical_string_equal = """
-                    lw $s1, 0($sp)
-                    lw $s0, 4($sp)
-
-    				cmploop_{}:
-    					lb $t2,0($s0)
-    					lb $t3,0($s1)
-    					bne $t2,$t3,cmpne_{}
-
-    					beq $t2,$zero,cmpeq_{}
-    					beq $t3,$zero,cmpeq_{}
-
-    					addi $s0,$s0,1
-    					addi $s1,$s1,1
-
-    					j cmploop_{}
-
-    				cmpne_{}:
-    					li $t0,0
-    					sw $t0, 4($sp)
-    					addi $sp, $sp, 4
-    					j end_{}
-
-    				cmpeq_{}:
-    					li $t0,1
-    					sw $t0, 4($sp)
-    					addi $sp, $sp, 4
-    					j end_{}
-
-    				end_{}:
-
-    				"""
-
-    logical_unknown_equal = """
-    		lw $t1, 0($sp)
-    		lw $t0, 4($sp)
-    		seq $t2, $t0, $t1
-    		sw $t2, 4($sp) 
-    		addi $sp, $sp, 4
-    		"""
-
-
-    logical_double_not_equal = """
-					l.s $f2, 0($sp)
-					l.s $f4, 4($sp)
-					li $t0 , 1
-					c.eq.s $f4, $f2
-					bc1f d_neq_{}
-					li $t0 , 0
-				d_neq_{}:
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					"""
-
-    logical_sring_not_equal = """
-					### not_equal string
-					lw $s1, 0($sp)
-					lw $s0, 4($sp)
-					
-				cmploop_{}:
-					lb $t2,0($s0)
-					lb $t3,0($s1)
-					bne $t2,$t3,cmpne_{}
-					
-					beq $t2,$zero,cmpeq_{}
-					beq $t3,$zero,cmpeq_{}
-					
-					addi $s0,$s0,1
-					addi $s1,$s1,1
-					
-					j cmploop_{}
-					
-				cmpne_{}:
-					li $t0,1
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					j end_{}
-					
-				cmpeq_{}:
-					li $t0,0
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					j end_{}
-					
-				end_{}:
-
-				"""
-    logical_unknown_not_equal = """
-					lw $t1, 0($sp)
-					lw $t0, 4($sp)
-					sne $t2, $t0, $t1
-					sw $t2, 4($sp) 
-					addi $sp, $sp, 4
-					"""
-
-    logical_less_than_int = """
-					lw $t1, 0($sp)
-					lw $t0, 4($sp)
-					slt $t2, $t0, $t1
-					sw $t2, 4($sp) 
-					addi $sp, $sp, 4
-					"""
-
-    logical_less_than_double = """
-					l.s $f2, 0($sp)
-					l.s $f4, 4($sp)
-					li $t0 , 0
-					c.lt.s $f4, $f2
-					bc1f d_lt_{}
-					li $t0 , 1
-				d_lt_{}:
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					"""
-
-    logical_less_than_or_equal_int = """
-					lw $t1, 0($sp)
-					lw $t0, 4($sp)
-					sle $t2, $t0, $t1
-					sw $t2, 4($sp) 
-					addi $sp, $sp, 4
-					"""
-    logical_less_than_or_equal_double = """
-					l.s $f2, 0($sp)
-					l.s $f4, 4($sp)
-					li $t0 , 0
-					c.le.s $f4, $f2
-					bc1f d_le_{}
-					li $t0 , 1
-				d_le_{}:
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					"""
-
-    logical_greater_than_int = """
-					lw $t1, 0($sp)
-					lw $t0, 4($sp)
-					sgt $t2, $t0, $t1
-					sw $t2, 4($sp) 
-					addi $sp, $sp, 4
-					"""
-
-    logical_greater_than_double = """
-					l.s $f2, 0($sp)
-					l.s $f4, 4($sp)
-					li $t0 , 0
-					c.lt.s $f2, $f4
-					bc1f d_gt_{}
-					li $t0 , 1
-				d_gt_{}:
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					"""
-
-    logical_greater_than_or_equal_int = """
-					lw $t1, 0($sp)
-					lw $t0, 4($sp)
-					sge $t2, $t0, $t1
-					sw $t2, 4($sp) 
-					addi $sp, $sp, 4
-					"""
-    logical_greater_than_or_equal_double = """
-					l.s $f2, 0($sp)
-					l.s $f4, 4($sp)
-					li $t0 , 0
-					c.le.s $f2, $f4
-					bc1f d_ge_{}
-					li $t0 , 1
-				d_ge_{}:
-					sw $t0, 4($sp)
-					addi $sp, $sp, 4
-					"""
 
