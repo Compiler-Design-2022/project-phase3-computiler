@@ -3,12 +3,12 @@ from typing import List
 from lark import Lark, ParseError
 from lark.visitors import Interpreter
 
-from compiler.decaf_enums import Constants, DecafTypes
-from compiler.globals import GlobalVariables
-from compiler.mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt
-from compiler.semantic_error import SemanticError
-from compiler.symbol_table import Variable, SymbolTable, Type
-from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
+from decaf_enums import Constants, DecafTypes
+from globals import GlobalVariables
+from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt
+from semantic_error import SemanticError
+from symbol_table import Variable, SymbolTable, Type
+from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
 
 
 class CodeGenerator(Interpreter):
@@ -18,6 +18,18 @@ class CodeGenerator(Interpreter):
     def get_version() -> int:
         CodeGenerator.change_var()
         return CodeGenerator.VARIABLE_NAME_COUNT
+
+    # TODO: how add break and continue?
+    def while_stmt(self, tree):
+        expression_code = self.visit(tree.children[1])
+        GlobalVariables.STACK.pop()
+        statement_code = self.visit(tree.children[2])
+        output_code = MIPSConditionalStmt.while_stmt.format(
+            expression_code=expression_code,
+            version=CodeGenerator.get_version(),
+            while_statement=statement_code
+        )
+        return output_code
 
     def if_stmt(self, tree):
         expression_code = self.visit(tree.children[1])

@@ -556,3 +556,16 @@ class MIPSConditionalStmt:
         j end_if_stmt_{version}
         end_if_stmt_{version}:
     """
+
+    while_stmt = """
+        while_start_{version}:
+        {expression_code}
+        lw $t0, 0($sp)
+        addi $t1, $zero, 1
+        beq $t0, $t1, while_statement_{version}
+        j end_while_{version}
+        while_statement_{version}:
+        {while_statement}
+        j while_start_{version}
+        end_while_{version}:
+    """
