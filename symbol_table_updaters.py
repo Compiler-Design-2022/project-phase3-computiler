@@ -28,6 +28,42 @@ class SymbolTableUpdater(Interpreter):
         tree.children[2].symbol_table = statement_block_table
         self.visit(tree.children[2])
 
+    def for_1(self, tree):
+        tree.children[1].symbol_table = tree.symbol_table
+        self.visit(tree.children[1])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[2].symbol_table = statement_block_table
+        self.visit(tree.children[2])
+
+    def for_2(self, tree):
+        tree.children[1].symbol_table = tree.symbol_table
+        self.visit(tree.children[1])
+        tree.children[2].symbol_table = tree.symbol_table
+        self.visit(tree.children[2])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[3].symbol_table = statement_block_table
+        self.visit(tree.children[3])
+
+    def for_3(self, tree):
+        tree.children[1].symbol_table = tree.symbol_table
+        self.visit(tree.children[1])
+        tree.children[2].symbol_table = tree.symbol_table
+        self.visit(tree.children[2])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[3].symbol_table = statement_block_table
+        self.visit(tree.children[3])
+
+    def for_4(self, tree):
+        tree.children[1].symbol_table = tree.symbol_table
+        self.visit(tree.children[1])
+        tree.children[2].symbol_table = tree.symbol_table
+        self.visit(tree.children[2])
+        tree.children[3].symbol_table = tree.symbol_table
+        self.visit(tree.children[3])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[4].symbol_table = statement_block_table
+        self.visit(tree.children[4])
+
 
 class SymbolTableParentUpdater(Visitor):
     def __default__(self, tree):

@@ -74,7 +74,7 @@ class CodeGenerator(Interpreter):
         )
         return output_code
 
-    def for_stmt(self, tree, expr_1, expr_2, expr_3, statement_num):
+    def for_shared_part(self, tree, expr_1, expr_2, expr_3, statement_num):
         expression_code_1 = expr_1
         expression_code_2 = expr_2
         expression_code_3 = expr_3
@@ -95,7 +95,7 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def for_1(self, tree):
-        return self.for_stmt(
+        return self.for_shared_part(
             tree,
             expr_1='',
             expr_2=self.visit(tree.children[1]),
@@ -104,7 +104,7 @@ class CodeGenerator(Interpreter):
         )
 
     def for_2(self, tree):
-        return self.for_stmt(
+        return self.for_shared_part(
             tree,
             expr_1=self.visit(tree.children[1]),
             expr_2=self.visit(tree.children[2]),
@@ -113,7 +113,7 @@ class CodeGenerator(Interpreter):
         )
 
     def for_3(self, tree):
-        return self.for_stmt(
+        return self.for_shared_part(
             tree,
             expr_1='',
             expr_2=self.visit(tree.children[1]),
@@ -122,7 +122,7 @@ class CodeGenerator(Interpreter):
         )
 
     def for_4(self, tree):
-        return self.for_stmt(
+        return self.for_shared_part(
             tree,
             expr_1=self.visit(tree.children[1]),
             expr_2=self.visit(tree.children[2]),
