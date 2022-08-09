@@ -427,6 +427,12 @@ class MIPS:
 
             	"""
 
+    variable_init = """
+        	# variable init
+        	li $t0, 0
+        	sw $t0, {}($gp)
+        	"""
+
 
 class MIPSDouble:
     unary_neg_double = """

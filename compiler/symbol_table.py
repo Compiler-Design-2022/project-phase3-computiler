@@ -67,3 +67,13 @@ class SymbolTable:
         if error:
             raise SemanticError(tree=tree)
         return None
+
+    def find_var(self, name, tree=None, error=True, depth_one=False):
+        if name in self.variables:
+            return self.variables[name]
+        if self.parent and not depth_one:
+            return self.parent.find_var(name, tree, error)
+
+        if error:
+            raise SemanticError(tree=tree)
+        return None

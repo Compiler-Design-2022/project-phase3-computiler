@@ -453,6 +453,18 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=type_))
         return code
 
+    def variable(self, tree):
+        global variable_inits_code
+
+        type_ = self.visit(tree.children[0])
+        var_name = tree.children[1].value
+        variable = tree.symbol_table.find_var(var_name, tree=tree)
+
+        variable_inits_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
+
+        return ''
+
+
 
 
 def prepare_main_tree(tree):
