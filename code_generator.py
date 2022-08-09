@@ -38,19 +38,26 @@ class CodeGenerator(Interpreter):
         CodeGenerator.pop_continue_and_break_target_labels()
         return statement_code
 
-    def int_to_bool(self, tree):
+    def convert_int_shared(self, tree, target_type, convert_code):
         expression_code = self.visit(tree.children[1])
         expr_var = GlobalVariables.STACK.pop()
         if expr_var.var_type != DecafTypes.int_type:
             raise SemanticError()
         output_code = expression_code
-        output_code += MIPS.convert_int_to_bool
+        output_code += convert_code
         GlobalVariables.STACK.append(
             Variable(
-                var_type=tree.symbol_table.get_type(DecafTypes.bool_type)
+                var_type=tree.symbol_table.get_type(target_type)
             )
         )
         return output_code
+
+    def int_to_bool(self, tree):
+        return self.convert_int_shared(
+            tree=tree,
+            target_type=DecafTypes.bool_type,
+            convert_code=MIPS.convert_int_to_bool
+        )
 
     def double_to_int(self, tree):
         expression_code = self.visit(tree.children[1])
@@ -67,18 +74,11 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def int_to_double(self, tree):
-        expression_code = self.visit(tree.children[1])
-        expr_var = GlobalVariables.STACK.pop()
-        if expr_var.var_type != DecafTypes.int_type:
-            raise SemanticError()
-        output_code = expression_code
-        output_code += MIPS.convert_int_to_double
-        GlobalVariables.STACK.append(
-            Variable(
-                var_type=tree.symbol_table.get_type(DecafTypes.double_type)
-            )
+        return self.convert_int_shared(
+            tree=tree,
+            target_type=DecafTypes.double_type,
+            convert_code=MIPS.convert_int_to_double
         )
-        return output_code
 
     def while_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
