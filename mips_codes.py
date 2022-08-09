@@ -9,7 +9,10 @@ class MIPS:
                 count += 1
                 continue
 
-    convert_double_to_int = """
+    convert_int_to_bool = """
+        lw $t0, 0($sp)
+        sne $t0, $t0, $zero
+        sw $t0, 0($sp)
     """
 
     convert_int_to_double = """
@@ -442,6 +445,9 @@ class MIPS:
 
 
 class MIPSDouble:
+    convert_double_to_int = """
+       """
+
     unary_neg_double = """
         l.s $f0, 0($sp)
         neg.s $f0, $f0

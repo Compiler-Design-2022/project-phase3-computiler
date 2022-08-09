@@ -38,16 +38,30 @@ class CodeGenerator(Interpreter):
         CodeGenerator.pop_continue_and_break_target_labels()
         return statement_code
 
+    def int_to_bool(self, tree):
+        expression_code = self.visit(tree.children[1])
+        expr_var = GlobalVariables.STACK.pop()
+        if expr_var.var_type != DecafTypes.int_type:
+            raise SemanticError()
+        output_code = expression_code
+        output_code += MIPS.convert_int_to_bool
+        GlobalVariables.STACK.append(
+            Variable(
+                var_type=tree.symbol_table.get_type(DecafTypes.bool_type)
+            )
+        )
+        return output_code
+
     def double_to_int(self, tree):
         expression_code = self.visit(tree.children[1])
         expr_var = GlobalVariables.STACK.pop()
         if expr_var.var_type != DecafTypes.double_type:
             raise SemanticError()
         output_code = expression_code
-        output_code += MIPS.convert_double_to_int
+        output_code += MIPSDouble.convert_double_to_int
         GlobalVariables.STACK.append(
             Variable(
-                var_type=tree.symbol_table.get_type(DecafTypes.double_type)
+                var_type=tree.symbol_table.get_type(DecafTypes.int_type)
             )
         )
         return output_code
