@@ -409,7 +409,7 @@ class CodeGenerator(Interpreter):
 
         code = MIPS.return_stmt
 
-        variable = Variable(var_type=Type("void"))
+        variable = tree.symbol_table.get_type('void')
 
         if len(tree.children) > 1:
             code += self.visit(tree.children[1])
