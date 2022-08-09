@@ -9,6 +9,9 @@ class MIPS:
                 count += 1
                 continue
 
+    convert_double_to_int = """
+    """
+
     convert_int_to_double = """
         l.s $f0, 0($sp)
         cvt.s.w $f1, $f0
