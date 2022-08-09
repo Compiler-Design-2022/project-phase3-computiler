@@ -402,6 +402,14 @@ class MIPS:
 
     array_base = "array_{}: .word \"{}\"\n"
 
+    return_stmt = '\t# return\n'
+
+    return_main = """
+    		lw $v0, 0($sp)
+    		addi $sp, $sp, 4
+
+    		"""
+
 
 class MIPSDouble:
     unary_neg_double = """

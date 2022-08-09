@@ -401,6 +401,33 @@ class CodeGenerator(Interpreter):
             function.label
         )
 
+    def return_stmt(self, tree):
+        if len(GlobalVariables.FUNCTION_STACK) == 0:
+            raise SemanticError(tree=tree)
+
+        function = GlobalVariables.FUNCTION_STACK[-1]
+
+        code = MIPS.return_stmt
+
+        variable = Variable(var_type=Type("void"))
+
+        if len(tree.children) > 1:
+            code += self.visit(tree.children[1])
+            variable = GlobalVariables.STACK.pop()
+
+            # store value
+            code += MIPS.return_main.replace("\t\t\t", "\t")
+
+        if variable.var_type.name != function.return_type.name:
+            raise SemanticError(tree=tree)
+
+        #jump to continue
+        code += f"""
+    	j {function.label}_end
+    	""".replace("\t\t", "")
+
+        return code
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
