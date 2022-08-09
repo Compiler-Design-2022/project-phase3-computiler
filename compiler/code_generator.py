@@ -438,6 +438,22 @@ class CodeGenerator(Interpreter):
             return tree.children[0].value
         return ''
 
+    def new_identifier(self, tree):
+        ident_name = tree.children[1].value
+        type_ = tree.symbol_table.find_type(ident_name, tree=tree)
+
+        class_ = type_.class_ref
+        if not class_:
+            raise SemanticError(tree=tree)
+
+        object_size = class_.get_object_size() + 1
+
+        code = MIPS.new_identifier.Format(object_size * 4, class_.address).replace("\t\t", "\t")
+
+        GlobalVariables.STACK.append(Variable(var_type=type_))
+        return code
+
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)

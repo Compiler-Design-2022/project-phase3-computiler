@@ -410,6 +410,23 @@ class MIPS:
 
     		"""
 
+    new_identifier = """
+            	# new object (new_identifier)
+
+            	li $v0, 9
+            	li $a0, {}
+            	syscall
+
+            	move $s0, $v0		# s0: address of object 
+
+            	lw $t0, {}($gp) 	# t0: address of vtable
+            	sw $t0, 0($s0)
+
+            	addi $sp, $sp, -4
+            	sw $s0, 0($sp)		# store object variable in stack
+
+            	"""
+
 
 class MIPSDouble:
     unary_neg_double = """
