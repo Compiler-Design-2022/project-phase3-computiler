@@ -29,9 +29,9 @@ class Function:
 
 
 class SymbolTable:
-    def __init__(self):
+    def __init__(self, parent=None):
         self.types = dict()
-        self.parent = None
+        self.parent = parent
         self.functions = {}
         self.variables = {}
 
