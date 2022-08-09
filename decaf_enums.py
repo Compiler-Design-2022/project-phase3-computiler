@@ -12,3 +12,8 @@ class DecafTypes:
     double_type = 'double'
     str_type = 'string'
     null_type = 'null'
+
+
+class LoopLabels:
+    while_start_label = "while_start_{version}"
+    while_end_label = "end_while_{version}"

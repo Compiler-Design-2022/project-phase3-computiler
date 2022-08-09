@@ -3,7 +3,7 @@ from typing import List
 from lark import Lark, ParseError
 from lark.visitors import Interpreter
 
-from decaf_enums import Constants, DecafTypes
+from decaf_enums import Constants, DecafTypes, LoopLabels
 from globals import GlobalVariables
 from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt
 from semantic_error import SemanticError
@@ -15,18 +15,43 @@ class CodeGenerator(Interpreter):
     VARIABLE_NAME_COUNT = 0
 
     @staticmethod
+    def add_continue_and_break_target_labels(continue_label: str, break_label: str):
+        GlobalVariables.CONTINUE_LOOP_STACK.append(continue_label)
+        GlobalVariables.BREAK_LOOP_STACK.append(break_label)
+
+    @staticmethod
+    def pop_continue_and_break_target_labels():
+        GlobalVariables.CONTINUE_LOOP_STACK.pop()
+        GlobalVariables.BREAK_LOOP_STACK.pop()
+
+    @staticmethod
     def get_version() -> int:
         CodeGenerator.change_var()
         return CodeGenerator.VARIABLE_NAME_COUNT
+
+    def conditional_do_statement(self, tree, con_stmt, bre_stmt, stmt_children_number):
+        CodeGenerator.add_continue_and_break_target_labels(
+            continue_label=con_stmt,
+            break_label=bre_stmt
+        )
+        statement_code = self.visit(tree.children[stmt_children_number])
+        CodeGenerator.pop_continue_and_break_target_labels()
+        return statement_code
 
     # TODO: how add break and continue?
     def while_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
         GlobalVariables.STACK.pop()
-        statement_code = self.visit(tree.children[2])
+        version = CodeGenerator.get_version()
+        statement_code = self.conditional_do_statement(
+            tree,
+            LoopLabels.while_start_label.format(version=version),
+            LoopLabels.while_end_label.format(version=version),
+            2
+        )
         output_code = MIPSConditionalStmt.while_stmt.format(
             expression_code=expression_code,
-            version=CodeGenerator.get_version(),
+            version=version,
             while_statement=statement_code
         )
         return output_code
