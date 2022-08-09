@@ -584,3 +584,5 @@ class MIPSConditionalStmt:
     continue_stmt = """
         j {target_label}
     """
+
+    break_stmt = continue_stmt

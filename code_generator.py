@@ -40,6 +40,15 @@ class CodeGenerator(Interpreter):
         )
         return output_code
 
+    def break_stmt(self, tree):
+        if not len(GlobalVariables.BREAK_LOOP_STACK):
+            raise SemanticError()
+        target_label = GlobalVariables.BREAK_LOOP_STACK[-1]
+        output_code = MIPSConditionalStmt.break_stmt.format(
+            target_label=target_label
+        )
+        return output_code
+
     def for_stmt(self, tree):
         pass
 
