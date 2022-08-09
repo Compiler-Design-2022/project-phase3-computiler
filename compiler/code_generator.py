@@ -441,7 +441,7 @@ class CodeGenerator(Interpreter):
 
     def new_identifier(self, tree):
         ident_name = tree.children[1].value
-        type_ = tree.symbol_table.find_type(ident_name, tree=tree)
+        type_ = tree.symbol_table.get_type(ident_name)
 
         class_ = type_.class_ref
         if not class_:
