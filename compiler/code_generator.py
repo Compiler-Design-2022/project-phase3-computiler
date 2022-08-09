@@ -428,6 +428,11 @@ class CodeGenerator(Interpreter):
 
         return code
 
+    def field(self, tree):
+        access_mode = self.visit(tree.children[0])
+
+        return self.visit(tree.children[1])
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
