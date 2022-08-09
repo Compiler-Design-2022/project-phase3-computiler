@@ -9,6 +9,12 @@ class MIPS:
                 count += 1
                 continue
 
+    convert_int_to_double = """
+        l.s $f0, 0($sp)
+        cvt.s.w $f1, $f0
+        s.s $f1, 0($sp)
+    """
+
     bool_const = """
             li $t0, {value}
             addi $sp, $sp, -4

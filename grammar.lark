@@ -113,10 +113,10 @@ print_stmt: PRINT "(" actuals ")" ";"
     | "(" expr ")"
     | l_value
     | call
-    | ITOD "(" expr ")" -> itod
-    | DTOI "(" expr ")" -> dtoi
-    | ITOB "(" expr ")" -> itob
-    | BTOI "(" expr ")" -> btoi
+    | ITOD "(" expr ")" -> int_to_double
+    | DTOI "(" expr ")" -> double_to_int
+    | ITOB "(" expr ")" -> int_to_bool
+    | BTOI "(" expr ")" -> bool_to_int
     | THIS -> l_value_ident
 
 

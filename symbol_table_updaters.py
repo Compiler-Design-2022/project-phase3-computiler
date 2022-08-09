@@ -64,6 +64,10 @@ class SymbolTableUpdater(Interpreter):
         tree.children[4].symbol_table = statement_block_table
         self.visit(tree.children[4])
 
+    # TODO: i don't know how is this symbol table
+    def stmt_block(self, tree):
+        pass
+
 
 class SymbolTableParentUpdater(Visitor):
     def __default__(self, tree):

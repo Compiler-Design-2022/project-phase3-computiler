@@ -38,7 +38,20 @@ class CodeGenerator(Interpreter):
         CodeGenerator.pop_continue_and_break_target_labels()
         return statement_code
 
-    # TODO: how add break and continue?
+    def int_to_double(self, tree):
+        expression_code = self.visit(tree.children[1])
+        expr_var = GlobalVariables.STACK.pop()
+        if expr_var.var_type != DecafTypes.int_type:
+            raise SemanticError()
+        output_code = expression_code
+        output_code += MIPS.convert_int_to_double
+        GlobalVariables.STACK.append(
+            Variable(
+                var_type=tree.symbol_table.get_type(DecafTypes.double_type)
+            )
+        )
+        return output_code
+
     def while_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
         GlobalVariables.STACK.pop()
