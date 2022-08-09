@@ -573,10 +573,13 @@ class MIPSConditionalStmt:
     for_stmt = """
         {expression_code_1}
         for_start_{version}:
+        {expression_code_2}
         lw $t0, 0($sp)
         addi $t1, $zero, 1
         bne $t0, $t1, for_end_{version}
         {statement_code}
+        for_continue_label_{version}:
+        {expression_code_3}
         j for_start_{version}
         for_end_{version}:
     """

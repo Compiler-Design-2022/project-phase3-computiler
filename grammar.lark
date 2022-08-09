@@ -60,6 +60,11 @@ while_stmt: WHILE "(" expr ")" statement
 
 !for_stmt: FOR "(" expr? ";" expr ";" expr? ")" statement
 
+!for_stmt: FOR "(" ";" expr ";" ")" statement -> for_1
+    | FOR "(" expr ";" expr ";" ")" statement -> for_2
+    | FOR "(" ";" expr ";" expr ")" statement -> for_3
+    | FOR "(" expr ";" expr ";" expr ")" statement -> for_4
+
 return_stmt: RETURN expr? ";"
 
 break_stmt: BREAK ";"

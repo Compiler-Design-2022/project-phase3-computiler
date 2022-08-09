@@ -17,3 +17,5 @@ class DecafTypes:
 class LoopLabels:
     while_start_label = "while_start_{version}"
     while_end_label = "end_while_{version}"
+    for_break_label = "for_end_{version}"
+    for_continue_label = "for_continue_label_{version}"

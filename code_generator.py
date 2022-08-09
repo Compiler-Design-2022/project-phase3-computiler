@@ -74,8 +74,61 @@ class CodeGenerator(Interpreter):
         )
         return output_code
 
-    def for_stmt(self, tree):
-        pass
+    def for_stmt(self, tree, expr_1, expr_2, expr_3, statement_num):
+        expression_code_1 = expr_1
+        expression_code_2 = expr_2
+        expression_code_3 = expr_3
+        version = CodeGenerator.get_version()
+        statement_code = self.conditional_do_statement(
+            tree=tree,
+            con_stmt=LoopLabels.for_continue_label.format(version=version),
+            bre_stmt=LoopLabels.for_break_label.format(version=version),
+            stmt_children_number=statement_num
+        )
+        output_code = MIPSConditionalStmt.for_stmt.format(
+            version=version,
+            expression_code_1=expression_code_1,
+            expression_code_2=expression_code_2,
+            expression_code_3=expression_code_3,
+            statement_code=statement_code
+        )
+        return output_code
+
+    def for_1(self, tree):
+        return self.for_stmt(
+            tree,
+            expr_1='',
+            expr_2=self.visit(tree.children[1]),
+            expr_3='',
+            statement_num=2
+        )
+
+    def for_2(self, tree):
+        return self.for_stmt(
+            tree,
+            expr_1=self.visit(tree.children[1]),
+            expr_2=self.visit(tree.children[2]),
+            expr_3='',
+            statement_num=3
+        )
+
+    def for_3(self, tree):
+        return self.for_stmt(
+            tree,
+            expr_1='',
+            expr_2=self.visit(tree.children[1]),
+            expr_3=self.visit(tree.children[2]),
+            statement_num=3
+        )
+
+    def for_4(self, tree):
+        return self.for_stmt(
+            tree,
+            expr_1=self.visit(tree.children[1]),
+            expr_2=self.visit(tree.children[2]),
+            expr_3=self.visit(tree.children[3]),
+            statement_num=4
+        )
 
     def if_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
