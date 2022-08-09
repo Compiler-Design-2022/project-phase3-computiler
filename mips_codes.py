@@ -79,7 +79,6 @@ class MIPS:
     		.text
     		.globl main
     		main:
-    		#print error message
     		la $a0 , errorMsg
     		addi $v0 , $zero, 4
     		syscall
@@ -312,7 +311,7 @@ class MIPS:
 			{}
 
 			{}
-			
+
 		{}_end:
 
 			lw $ra, -4($fp)
@@ -368,7 +367,7 @@ class MIPS:
 		string_length: 
 			li $v0, 0
 			move $t1, $a0
-		
+
 		string_length_begin:
 			lb $t2, 0($t1)
 			beq $t2, $zero, string_length_end
@@ -428,7 +427,6 @@ class MIPS:
             	"""
 
     variable_init = """
-        	# variable init
         	li $t0, 0
         	sw $t0, {}($gp)
         	"""
@@ -477,20 +475,20 @@ class MIPSStr:
     concat = """
         lw $s0, 0($sp)
         lw $s1, 4($sp)
-        
+
         move $a0, $s0
         move $s2, $ra
         jal str_len
         move $ra, $s2
         move $t0, $v0
-        
+
         move $a0, $s1
         move $s2, $ra
         jal str_len
         move $ra, $s2
         add $t0, $t0, $v0
         addi $t0, $t0, 1
-        
+
         li $v0, 9
 		move $a0, $t0
 		syscall
@@ -504,7 +502,7 @@ class MIPSStr:
 		addi $s0, $s0, 1
 		addi $s2, $s2, 1
 		j add_str1_{version}
-		
+
 		add_str2_{version}:
 		lb $t1, 0($s1)
 		beq $t1, $zero, end_str_concat_{version}
@@ -512,7 +510,7 @@ class MIPSStr:
 		addi $s1, $s1, 1
 		addi $s2, $s2, 1
 		j add_str2_{version}
-		
+
 		end_str_concat_{version}:
     """
 
@@ -524,13 +522,13 @@ class MIPSStr:
     syscall
     addi $sp, $sp, -4
     sw $v0, 0($sp)
-    
+
     # read string from input
     move $a0, $v0
     li $a1, 2000
     li $v0, 8
     syscall
-    
+
     lw $a0, 0($sp)
     start_read_str_{version}:
     lb $t0, 0($a0)
@@ -542,4 +540,19 @@ class MIPSStr:
 	addi $a0, $a0, 1
 	j start_read_str_{version}
     end_read_str_{version}: 
+    """
+
+
+class MIPSConditionalStmt:
+    if_stmt = """
+        {expression_code}
+        lw $t0, 0($sp)
+        addi $t1, $zero, 1
+        beq $t0, $t1, if_stmt_block_{version}
+        {else_statement_code}
+        j end_if_stmt_{version}
+        if_stmt_block_{version}:
+        {statement_code}
+        j end_if_stmt_{version}
+        end_if_stmt_{version}:
     """

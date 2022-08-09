@@ -3,16 +3,35 @@ from typing import List
 from lark import Lark, ParseError
 from lark.visitors import Interpreter
 
-from decaf_enums import Constants, DecafTypes
-from globals import GlobalVariables
-from mips_codes import MIPS, MIPSDouble, MIPSStr
-from semantic_error import SemanticError
-from symbol_table import Variable, SymbolTable, Type
-from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
+from compiler.decaf_enums import Constants, DecafTypes
+from compiler.globals import GlobalVariables
+from compiler.mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt
+from compiler.semantic_error import SemanticError
+from compiler.symbol_table import Variable, SymbolTable, Type
+from compiler.symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
 
 
 class CodeGenerator(Interpreter):
     VARIABLE_NAME_COUNT = 0
+
+    @staticmethod
+    def get_version() -> int:
+        CodeGenerator.change_var()
+        return CodeGenerator.VARIABLE_NAME_COUNT
+
+    def if_stmt(self, tree):
+        expression_code = self.visit(tree.children[1])
+        else_statement_code = ''
+        statement_code = self.visit(tree.children[2])
+        if len(tree.children) > 3:
+            else_statement_code = self.visit(tree.children[4])
+        output_code = MIPSConditionalStmt.if_stmt.format(
+            expression_code=expression_code,
+            version=CodeGenerator.get_version(),
+            else_statement_code=else_statement_code,
+            statement_code=statement_code
+        )
+        return output_code
 
     def stmt_block(self, tree):
         children_codes = self.visit_children(tree)
@@ -174,18 +193,18 @@ class CodeGenerator(Interpreter):
         var_type = None
         if const_token_type == Constants.bool_const:
             value = int(tree.children[0].value)
-            var_type = tree.symbol_table.get_type('bool')
+            var_type = tree.symbol_table.get_type(DecafTypes.bool_type)
             output_code += MIPS.bool_const.format(value=value)
         elif const_token_type == Constants.int_const:
             value = int(tree.children[0].value)
-            var_type = tree.symbol_table.get_type('int')
+            var_type = tree.symbol_table.get_type(DecafTypes.int_type)
             output_code += MIPS.int_const.format(value=value)
         elif const_token_type == Constants.double_const:
             pass
         elif const_token_type == Constants.str_const:
             pass
         elif const_token_type == Constants.null_const:
-            var_type = tree.symbol_table.get_type('null')
+            var_type = tree.symbol_table.get_type(DecafTypes.null_type)
             output_code += MIPS.null_const
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
@@ -455,15 +474,12 @@ class CodeGenerator(Interpreter):
         return code
 
     def variable(self, tree):
-        global variable_inits_code
-
+        output_code = ''
         type_ = self.visit(tree.children[0])
         var_name = tree.children[1].value
         variable = tree.symbol_table.find_var(var_name, tree=tree)
-
-        variable_inits_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
-
-        return ''
+        output_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
+        return output_code
 
 
 def prepare_main_tree(tree):
@@ -479,7 +495,7 @@ def prepare_main_tree(tree):
 
 
 def generate(input_code):
-    parser = Lark.open('grammar.lark', parser="lalr", propagate_positions=True)
+    parser = Lark.open('./grammar.lark', parser="lalr", propagate_positions=True)
     try:
         tree = parser.parse(input_code)
         prepare_main_tree(tree)
@@ -493,8 +509,6 @@ def generate(input_code):
 
 if __name__ == "__main__":
     inputfile = 'example.d'
-
-    # inputfile = '../tmp/in.d'
     code = ""
     with open(inputfile, "r") as input_file:
         code = input_file.read()

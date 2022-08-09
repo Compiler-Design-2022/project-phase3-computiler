@@ -1,4 +1,4 @@
-from semantic_error import SemanticError
+from compiler.semantic_error import SemanticError
 
 
 class Type:
@@ -33,6 +33,7 @@ class SymbolTable:
         self.types = dict()
         self.parent = None
         self.functions = {}
+        self.variables = {}
 
     def get_type(self, var_type, rise_error=True, is_arr_type=False):
         if var_type in self.types.keys():
@@ -65,5 +66,5 @@ class SymbolTable:
             return self.parent.find_var(name, tree, error)
 
         if error:
-            raise SemanticError(tree=tree)
+            raise SemanticError()
         return None
