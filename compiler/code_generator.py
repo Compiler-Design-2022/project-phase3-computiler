@@ -429,9 +429,14 @@ class CodeGenerator(Interpreter):
         return code
 
     def field(self, tree):
-        access_mode = self.visit(tree.children[0])
+        access_modifier = self.visit(tree.children[0])
 
         return self.visit(tree.children[1])
+
+    def access_modifier(self, tree):
+        if tree.children:
+            return tree.children[0].value
+        return ''
 
 
 def prepare_main_tree(tree):

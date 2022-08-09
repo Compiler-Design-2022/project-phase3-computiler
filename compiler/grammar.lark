@@ -29,10 +29,10 @@ formals: variable ("," variable)*
 
 class_decl: CLASS IDENT (EXTENDS IDENT)? (IMPLEMENTS IDENT ("," IDENT)*)?  "{" field* "}"
 
-field: access_mode variable_decl
-    | access_mode function_decl
+field: access_modifier variable_decl
+    | access_modifier function_decl
 
-access_mode: PRIVATE
+access_modifier: PRIVATE
     | PROTECTED
     | PUBLIC
     |

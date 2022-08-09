@@ -92,7 +92,7 @@ def p_field(p):
     """
 
 
-def p_access_mode(p):
+def p_access_modifier(p):
     """AccessMode : PRIVATE
     | PROTECTED
     | PUBLIC
