@@ -31,6 +31,9 @@ class CodeGenerator(Interpreter):
         )
         return output_code
 
+    def for_stmt(self, tree):
+        pass
+
     def if_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
         else_statement_code = ''
