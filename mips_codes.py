@@ -580,3 +580,7 @@ class MIPSConditionalStmt:
         j for_start_{version}
         for_end_{version}:
     """
+
+    continue_stmt = """
+        j {target_label}
+    """

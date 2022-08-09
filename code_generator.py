@@ -31,6 +31,15 @@ class CodeGenerator(Interpreter):
         )
         return output_code
 
+    def continue_stmt(self, tree):
+        if not len(GlobalVariables.CONTINUE_LOOP_STACK):
+            raise SemanticError()
+        target_label = GlobalVariables.CONTINUE_LOOP_STACK[-1]
+        output_code = MIPSConditionalStmt.continue_stmt.format(
+            target_label=target_label
+        )
+        return output_code
+
     def for_stmt(self, tree):
         pass
 
@@ -438,7 +447,7 @@ class CodeGenerator(Interpreter):
 
     def return_stmt(self, tree):
         if len(GlobalVariables.FUNCTION_STACK) == 0:
-            raise SemanticError(tree=tree)
+            raise SemanticError()
 
         function = GlobalVariables.FUNCTION_STACK[-1]
 
@@ -454,7 +463,7 @@ class CodeGenerator(Interpreter):
             code += MIPS.return_main.replace("\t\t\t", "\t")
 
         if variable.var_type.name != function.return_type.name:
-            raise SemanticError(tree=tree)
+            raise SemanticError()
 
         # jump to continue
         code += f"""
@@ -479,7 +488,7 @@ class CodeGenerator(Interpreter):
 
         class_ = type_.class_ref
         if not class_:
-            raise SemanticError(tree=tree)
+            raise SemanticError()
 
         object_size = class_.get_object_size() + 1
 
@@ -524,7 +533,6 @@ def generate(input_code):
 
 if __name__ == "__main__":
     inputfile = 'example.d'
-    code = ""
     with open(inputfile, "r") as input_file:
         code = input_file.read()
     code = generate(code)
