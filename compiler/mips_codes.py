@@ -478,23 +478,23 @@ class MIPSStr:
         lw $s0, 0($sp)
         lw $s1, 4($sp)
         
-        mov $a0, $s0
-        mov $s2, $ra
+        move $a0, $s0
+        move $s2, $ra
         jal str_len
-        mov $ra, $s2
-        mov $t0, $v0
+        move $ra, $s2
+        move $t0, $v0
         
-        mov $a0, $s1
-        mov $s2, $ra
+        move $a0, $s1
+        move $s2, $ra
         jal str_len
-        mov $ra, $s2
+        move $ra, $s2
         add $t0, $t0, $v0
         addi $t0, $t0, 1
         
         li $v0, 9
 		move $a0, $t0
 		syscall
-		mov $s2, $v0
+		move $s2, $v0
 		addi $sp, $sp, 4
 		sw $s2, 0($sp)
 		add_str1_{version}:
@@ -514,4 +514,32 @@ class MIPSStr:
 		j add_str2_{version}
 		
 		end_str_concat_{version}:
+    """
+
+    # TODO: check is this true?
+    read_line = """
+    # allocate memory for input string
+    li $a0, 2000
+    li $v0, 9
+    syscall
+    addi $sp, $sp, -4
+    sw $v0, 0($sp)
+    
+    # read string from input
+    move $a0, $v0
+    li $a1, 2000
+    li $v0, 8
+    syscall
+    
+    lw $a0, 0($sp)
+    start_read_str_{version}:
+    lb $t0, 0($a0)
+    beq $t0, $zero, end_read_str_{version}
+    bne $t0, 10, not_remove_char_{version}
+	move $t2, $zero
+	sb $t2, 0($a0)
+	not_remove_char_{version}:
+	addi $a0, $a0, 1
+	j start_read_str_{version}
+    end_read_str_{version}: 
     """

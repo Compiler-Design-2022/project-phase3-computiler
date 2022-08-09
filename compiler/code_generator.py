@@ -153,7 +153,8 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def read_line(self, tree):
-        output_code = ''
+        CodeGenerator.change_var()
+        output_code = MIPSStr.read_line.format(version=CodeGenerator.VARIABLE_NAME_COUNT)
         GlobalVariables.STACK.append(
             Variable(
                 var_type=tree.symbol_table.get_type(DecafTypes.str_type)
@@ -421,7 +422,7 @@ class CodeGenerator(Interpreter):
         if variable.var_type.name != function.return_type.name:
             raise SemanticError(tree=tree)
 
-        #jump to continue
+        # jump to continue
         code += f"""
     	j {function.label}_end
     	""".replace("\t\t", "")
@@ -463,8 +464,6 @@ class CodeGenerator(Interpreter):
         variable_inits_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
 
         return ''
-
-
 
 
 def prepare_main_tree(tree):
