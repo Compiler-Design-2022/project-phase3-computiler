@@ -597,6 +597,9 @@ class CodeGenerator(Interpreter):
             function.label
         )
 
+    def actual_vars(self, tree):
+        return '\n'.join(self.visit_children(tree))
+
     def print_stmt(self, tree):
         _, _, _, expr2_code, _ = self.prepare_calculations(tree)
 
