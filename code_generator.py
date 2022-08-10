@@ -361,7 +361,8 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
-    # logical functions or, and, equal, not_equal, less than, equal_or_less_than, greater_than, equal_or_greater_than,
+    # logical functions or, and, not, equal, not_equal, less than, equal_or_less_than, greater_than,
+    # equal_or_greater_than,
     def logical_or(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
@@ -383,6 +384,21 @@ class CodeGenerator(Interpreter):
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
+
+    def logical_not(self, tree):
+        _, _, expr1_code, _, _ = self.prepare_calculations(tree)
+
+        out_put = expr1_code
+
+        var = GlobalVariables.STACK.pop()
+
+        if var.var_type.name != DecafTypes.bool_type:
+            raise SemanticError()
+
+        out_put += MIPS.logical_not
+
+        GlobalVariables.STACK.append(Variable(var_type=var.var_type))
+        return out_put
 
     def logical_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
