@@ -619,12 +619,25 @@ class MIPSPrintStmt:
             syscall
 			"""
 
+    double_stmt = """
+                li $v0, 2
+                l.s $f12, {}($sp)
+                syscall
+                """
+
     bool_stmt = """
             lw $a0, {}($sp)
             move $s0, $ra 
             jal print_bool
             move $ra, $s0 
             """
+    string_stmt = """
+                li $v0, 4	 
+                lw $a0, {}($sp)
+                syscall
+            """
+
+
 
 
 
