@@ -567,7 +567,6 @@ class CodeGenerator(Interpreter):
 
     def declare_function(self, tree):
         _, var_1, var_2, var_3 = tree.children[:4]
-        # new_type = self.visit(var_0) if isinstance(var_0, Tree) else Type('void')
         function_name = var_1.value
         function = tree.symbol_table.get_function(function_name, tree=tree)
         self.visit(var_2)
@@ -588,6 +587,12 @@ class CodeGenerator(Interpreter):
             stmt_block,
             function.label
         )
+
+    def print_stmt(self, tree):
+        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+
+        if len(GlobalVariables.FUNCTION_STACK) == 0:
+            raise SemanticError()
 
     def return_stmt(self, tree):
         if len(GlobalVariables.FUNCTION_STACK) == 0:
