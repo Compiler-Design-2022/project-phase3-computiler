@@ -621,10 +621,9 @@ class CodeGenerator(Interpreter):
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
             stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
 
+        CodeGenerator.fix_stack_ptr_position(stack_ptr_pos)
 
-
-
-
+        return output
 
     def return_stmt(self, tree):
         if len(GlobalVariables.FUNCTION_STACK) == 0:
