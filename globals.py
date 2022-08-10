@@ -9,3 +9,4 @@ class GlobalVariables:
     CLASS_INIT = ''
     CONTINUE_LOOP_STACK = []
     BREAK_LOOP_STACK = []
+    ASSIGN_FLAG = False
