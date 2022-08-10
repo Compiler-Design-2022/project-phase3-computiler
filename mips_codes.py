@@ -636,9 +636,9 @@ class MIPSPrintStmt:
                 lw $a0, {}($sp)
                 syscall
             """
-
-
-
-
-
-
+    new_line_stmt = """
+				la $a0, newLineStr
+				li $v0, 4
+				syscall
+				addi $sp, $sp, {}
+            """

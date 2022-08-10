@@ -5,7 +5,7 @@ from lark.visitors import Interpreter
 
 from decaf_enums import Constants, DecafTypes, LoopLabels
 from globals import GlobalVariables
-from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt
+from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt
 from semantic_error import SemanticError
 from symbol_table import Variable, SymbolTable, Type
 from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
@@ -28,6 +28,10 @@ class CodeGenerator(Interpreter):
     def get_version() -> int:
         CodeGenerator.change_var()
         return CodeGenerator.VARIABLE_NAME_COUNT
+
+    @staticmethod
+    def decrease_stack_ptr_pos(stack_ptr: int) -> int:
+        return stack_ptr - 4
 
     def conditional_do_statement(self, tree, con_stmt, bre_stmt, stmt_children_number):
         CodeGenerator.add_continue_and_break_target_labels(
@@ -603,6 +607,13 @@ class CodeGenerator(Interpreter):
         for item in GlobalVariables.STACK[pre_stack_len:]:
             var_type_name = item.var_type.name
             if var_type_name == DecafTypes.int_type:
+                output += MIPSPrintStmt.int_stmt.format(stack_ptr_pos)
+            elif var_type_name == DecafTypes.double_type:
+                output += MIPSPrintStmt.double_stmt.format(stack_ptr_pos)
+            elif var_type_name == DecafTypes.bool_type:
+                output += MIPSPrintStmt.bool_stmt.format(stack_ptr_pos)
+            elif var_type_name == DecafTypes.str_type:
+                output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
 
 
 
