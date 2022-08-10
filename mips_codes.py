@@ -610,3 +610,12 @@ class MIPSConditionalStmt:
     """
 
     break_stmt = continue_stmt
+
+
+class MIPSPrintStmt:
+    int_stmt = """
+            li $v0, 1	
+            lw $a0, {}($sp)
+            syscall
+			"""
+

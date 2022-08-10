@@ -600,6 +600,10 @@ class CodeGenerator(Interpreter):
 
         stack_ptr_pos = 4 * (len(GlobalVariables.STACK) - (1 + pre_stack_len))
 
+        for item in GlobalVariables.STACK[pre_stack_len:]:
+            var_type_name = item.var_type.name
+            if var_type_name == DecafTypes.int_type:
+
 
 
 
