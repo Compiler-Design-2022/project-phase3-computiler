@@ -298,6 +298,12 @@ class MIPS:
     					addi $sp, $sp, 4
     					"""
 
+    logical_not = """
+				lw $t0, 0($sp)
+				xori $t1, $t0, 1
+				sw $t1, 0($sp) 
+				"""
+
     function_formal = """
 			lw $t0, {}($fp)
 			sw $t0, {}($gp)
