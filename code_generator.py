@@ -614,6 +614,7 @@ class CodeGenerator(Interpreter):
                 output += MIPSPrintStmt.bool_stmt.format(stack_ptr_pos)
             elif var_type_name == DecafTypes.str_type:
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
+            stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
 
 
 
