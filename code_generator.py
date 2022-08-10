@@ -574,6 +574,9 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
 
+    def type(self, tree):
+        return tree.symbol_table.find_type(tree.children[0].value, tree=tree)
+
     def declare_function(self, tree):
         _, var_1, var_2, var_3 = tree.children[:4]
         function_name = var_1.value
