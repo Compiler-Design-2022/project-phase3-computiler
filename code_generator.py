@@ -589,10 +589,19 @@ class CodeGenerator(Interpreter):
         )
 
     def print_stmt(self, tree):
-        var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
+        _, _, _, expr2_code, _ = self.prepare_calculations(tree)
 
-        if len(GlobalVariables.FUNCTION_STACK) == 0:
-            raise SemanticError()
+        pre_stack_len = len(GlobalVariables.STACK)
+
+        output = expr2_code
+
+        if len(GlobalVariables.STACK) == pre_stack_len:
+            return output
+
+        stack_ptr_pos = 4 * (len(GlobalVariables.STACK) - (1 + pre_stack_len))
+
+
+
 
     def return_stmt(self, tree):
         if len(GlobalVariables.FUNCTION_STACK) == 0:
