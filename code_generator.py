@@ -33,6 +33,11 @@ class CodeGenerator(Interpreter):
     def decrease_stack_ptr_pos(stack_ptr: int) -> int:
         return stack_ptr - 4
 
+    @classmethod
+    def fix_stack_ptr_position(cls, dest_pos: int):
+        while dest_pos < len(GlobalVariables.STACK):
+            GlobalVariables.STACK.pop()
+
     def conditional_do_statement(self, tree, con_stmt, bre_stmt, stmt_children_number):
         CodeGenerator.add_continue_and_break_target_labels(
             continue_label=con_stmt,
@@ -615,6 +620,8 @@ class CodeGenerator(Interpreter):
             elif var_type_name == DecafTypes.str_type:
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
             stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
+
+
 
 
 
