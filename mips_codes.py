@@ -304,6 +304,21 @@ class MIPS:
 				sw $t1, 0($sp) 
 				"""
 
+    l_value_assign_true = """
+				addi $t0, $gp, {}
+				sw $t0, -4($sp)
+
+				lw $t0, {}($gp)
+				sw $t0, -8($sp)
+				addi $sp, $sp, -8
+				"""
+
+    l_value_assign_false = """
+				lw $t0, {}($gp)
+				addi $sp, $sp, -4
+				sw $t0, 0($sp)
+				"""
+
     function_formal = """
 			lw $t0, {}($fp)
 			sw $t0, {}($gp)

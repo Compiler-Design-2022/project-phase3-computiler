@@ -370,6 +370,17 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
+    #class not implemented
+    def l_value_identifier(self, tree):
+        var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False, depth_one=True)
+        GlobalVariables.STACK.append(var)
+
+        output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address, 2) if GlobalVariables.ASSIGN_FLAG else MIPS.l_value_assign_false.format(var.address)
+
+        GlobalVariables.ASSIGN_FLAG = False
+
+        return output
+
     # logical functions or, and, not, equal, not_equal, less than, equal_or_less_than, greater_than,
     # equal_or_greater_than,
     def logical_or(self, tree):
