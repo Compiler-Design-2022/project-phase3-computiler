@@ -619,3 +619,13 @@ class MIPSPrintStmt:
             syscall
 			"""
 
+    bool_stmt = """
+            lw $a0, {}($sp)
+            move $s0, $ra 
+            jal print_bool
+            move $ra, $s0 
+            """
+
+
+
+
