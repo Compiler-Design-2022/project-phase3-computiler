@@ -13,6 +13,7 @@ class DecafTypes:
     str_type = 'string'
     null_type = 'null'
     array_type = 'array'
+    void_type = 'void'
 
 
 class LoopLabels:

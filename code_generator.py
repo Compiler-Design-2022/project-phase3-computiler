@@ -252,7 +252,6 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(var)
         return output_code
 
-    # module, unary negative
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
         if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
@@ -646,7 +645,7 @@ class CodeGenerator(Interpreter):
         if not len(GlobalVariables.FUNCTION_STACK):
             raise SemanticError()
         function = GlobalVariables.FUNCTION_STACK[-1]
-        variable = tree.symbol_table.get_type('void')
+        variable = tree.symbol_table.get_type(DecafTypes.void_type)
         output_code = ''
         if len(tree.children) > 1:
             output_code += self.visit(tree.children[1])
@@ -661,7 +660,7 @@ class CodeGenerator(Interpreter):
 
     def field(self, tree):
         access_modifier = self.visit(tree.children[0])
-
+        # TODO @Arab: why do not use access modifier
         return self.visit(tree.children[1])
 
     def access_modifier(self, tree):
@@ -742,12 +741,12 @@ class CodeGenerator(Interpreter):
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
     tree.symbol_table = SymbolTable()
-    tree.symbol_table.add_type(Type('int', 4))
-    tree.symbol_table.add_type(Type('double', 8))
-    tree.symbol_table.add_type(Type('bool', 4))
-    tree.symbol_table.add_type(Type('void', 0))
-    tree.symbol_table.add_type(Type('string', 8))
-    tree.symbol_table.add_type(Type('array', 4))
+    tree.symbol_table.add_type(Type(DecafTypes.int_type, 4))
+    tree.symbol_table.add_type(Type(DecafTypes.double_type, 8))
+    tree.symbol_table.add_type(Type(DecafTypes.bool_type, 4))
+    tree.symbol_table.add_type(Type(DecafTypes.void_type, 0))
+    tree.symbol_table.add_type(Type(DecafTypes.str_type, 8))
+    tree.symbol_table.add_type(Type(DecafTypes.array_type, 4))
     SymbolTableUpdater().visit_topdown(tree)
 
 
