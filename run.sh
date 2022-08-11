@@ -1,6 +1,6 @@
 #!/bin/bash
-# subtasks=( "G1" "G2" "G3" "tests" "tests-ours" )
-# scores=( 10 20 30 60 40)
+subtasks=( "G1" "G2" "G3" )
+scores=( 10 20 30 )
 mkdir -p out
 mkdir -p report
 cd ./tests
@@ -10,14 +10,8 @@ dirlist=(`ls`) ;
 OUTPUT_DIRECTORY="out/"
 TEST_DIRECTORY="tests/"
 REPORT_DIRECTORY="report/"
-SOURCE_DIRECTORY=""
 
 cd ../
-
-touch wrongs
-rm wrongs
-touch wrongs
-
 for folder in ${dirlist[*]}
 do
 	NUMBER_OF_PASSED=0
@@ -29,7 +23,7 @@ do
 	mkdir -p $folder
 	cd ..
 	cd ./tests
-	cd $folder
+	cd $folder	
 	testlist=(`ls ${prefix}*.d`);
 	cd ../../
 	for filelist in ${testlist[*]}
@@ -41,21 +35,19 @@ do
 		report_filename="$filename.report.txt"
 		echo "Running Test $filename -------------------------------------"
 		if command -v python3; then
-			python3 main.py -i "$TEST_DIRECTORY/$folder/$filelist" -o "$OUTPUT_DIRECTORY/$folder/$output_asm"
+			python3 main.py -i "$folder/$filelist" -o "$folder/$output_asm"
 		else
-			python main.py -i "$TEST_DIRECTORY/$folder/$filelist" -o "$OUTPUT_DIRECTORY/$folder/$output_asm"
+			python main.py -i "$folder/$filelist" -o "$folder/$output_asm"
 		fi
 		if [ $? -eq 0 ]; then
 			echo "MIPS Generated Successfuly!"
-
 		spim -a -f "$OUTPUT_DIRECTORY$folder/$output_asm" < "$TEST_DIRECTORY$folder/$program_input" > "$OUTPUT_DIRECTORY$folder/$output_filename"
-
 		if [ $? -eq 0 ]; then
 			echo "Code Executed Successfuly!"
 			if command -v python3; then
-				python3 main.py -a "$OUTPUT_DIRECTORY$folder/$output_filename" -b "$TEST_DIRECTORY$folder/$output_filename" -o "$REPORT_DIRECTORY$folder/$report_filename"
+				python3 comp.py -a "$OUTPUT_DIRECTORY$folder/$output_filename" -b "$TEST_DIRECTORY$folder/$output_filename" -o "$REPORT_DIRECTORY$folder/$report_filename"
 			else
-				python main.py -a "$OUTPUT_DIRECTORY$folder/$output_filename" -b "$TEST_DIRECTORY$folder/$output_filename" -o "$REPORT_DIRECTORY$folder/$report_filename"
+				python comp.py -a "$OUTPUT_DIRECTORY$folder/$output_filename" -b "$TEST_DIRECTORY$folder/$output_filename" -o "$REPORT_DIRECTORY$folder/$report_filename"
 			fi
 			if [[ $? = 0 ]]; then
 				((NUMBER_OF_PASSED++))
@@ -63,47 +55,37 @@ do
 			else
 				((NUMBER_OF_FAILED++))
 				echo "---- test failed !"
-				echo "$folder/$filename" >> wrongs
 			echo
 			fi
-			fi
+			fi 
 		else
 			echo "Code did not execute successfuly!"
 			((NUMBER_OF_FAILED++))
-			echo "$folder/$filename" >> wrongs
 		fi
-
+		
 	done
-
+	
 	echo "Passed : $NUMBER_OF_PASSED"
 	echo "Failed : $NUMBER_OF_FAILED"
-
-	# echo "Subtask score: "
-	# len=${#subtasks[@]}
-	# for (( i=0; i<$len; i++ ))
-	# do
-	# 	if [[ "${subtasks[$i]}" == "$folder" ]]; then
-	# 		subtask_score=$(${scores[$i]}*$NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED));
-	# 		echo $subtask_score;
-	# 		(( score+= ${scores[$i]}*$NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED)));
-	# 	fi
-	# done
-
-	((total_passed+=$NUMBER_OF_PASSED))
-	((total_failed+=$NUMBER_OF_FAILED))
-
+	
+	echo "Subtask score: "
+	len=${#subtasks[@]}
+	for (( i=0; i<$len; i++ ))
+	do
+		if [[ "${subtasks[$i]}" == "$folder" ]]; then
+			subtask_score=$(( ${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
+			echo $subtask_score;
+			(( score+= ${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
+		fi
+	done
+	
+	
 	echo "Subtask $folder done ------------------------------"
 	echo $'\n\n'
-
-
+	
+	
 done
 
 echo "Final score: "
-# echo "$score"
+echo "$score"
 
-
-echo "Passed : $total_passed"
-echo "Failed : $total_failed"
-
-
-cat wrongs

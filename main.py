@@ -1,27 +1,36 @@
-import getopt
-import sys
-from code_generator import generate
+import sys, getopt
+import code_generator
 
 
 def main(argv):
-
-    input_file, output_file = '', ''
+    inputfile = ''
+    outputfile = ''
     try:
         opts, args = getopt.getopt(argv, "dhpsi:o:", ["ifile=", "ofile="])
     except getopt.GetoptError:
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt in ("-i", "--ifile"):
-            input_file = arg
+        if opt == '-d':
+            debug = True
+        if opt == '-s':
+            run_scanner_option = True
+        if opt == '-p':
+            run_parser_option = True
+        if opt == '-h':
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
         elif opt in ("-o", "--ofile"):
-            output_file = arg
+            outputfile = arg
 
-    with open(input_file, "r") as input_file_data:
-        code = input_file_data.read()
-    output_file = open(output_file, "w")
-    mips_code = generate(code)
-    output_file.write(mips_code)
+    with open('tests/' + inputfile, "r") as input_file:
+        code = input_file.read()
+
+    output_file = open('tests/' + outputfile, "w")
+
+    mips = code_generator.generate(code)
+    output_file.write(mips)
 
 
 if __name__ == "__main__":

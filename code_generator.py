@@ -766,12 +766,12 @@ def generate(input_code):
 
 
 if __name__ == "__main__":
-    inputfile = 'tests/BooleanExpressions/t060-boolean-1.d'
+    inputfile = 'tests/SemanticError(type1)/t402_error1_3.d'
     with open(inputfile, "r") as input_file:
         code = input_file.read()
     code = generate(code)
     print("#### code ")
     print(code)
 
-    output_file = open("tmp/res.mips", "w")
+    output_file = open("tmp/res.s", "w")
     output_file.write(code)
