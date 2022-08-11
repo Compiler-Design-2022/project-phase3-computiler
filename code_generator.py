@@ -713,6 +713,23 @@ class CodeGenerator(Interpreter):
 
         return main_code
 
+    def dtoi(self, tree):
+        main_code = self.visit(tree.children[1])
+        source_var = GlobalVariables.STACK.pop()
+
+        if source_var.var_type.name != DecafTypes.double_type:
+            raise SemanticError()
+
+        CodeGenerator.VARIABLE_NAME_COUNT += 1
+
+        label = CodeGenerator.VARIABLE_NAME_COUNT
+
+        main_code += MIPS.convert_double_to_int.format(label, label, label, label, label, label).replace("\t\t\t", "")
+
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.find_type(DecafTypes.int_type, tree=tree)))
+
+        return main_code
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
