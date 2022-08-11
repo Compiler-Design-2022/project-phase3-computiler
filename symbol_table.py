@@ -2,9 +2,10 @@ from semantic_error import SemanticError
 
 
 class Type:
-    def __init__(self, name, size=None):
+    def __init__(self, name, size=None, arr_type=None):
         self.name = name
         self.size = size
+        self.arr_type = arr_type
 
     def is_same(self, target):
         if target.name == self.name and target.size == self.size:

@@ -730,6 +730,11 @@ class CodeGenerator(Interpreter):
 
         return main_code
 
+    def array_type(self, tree):
+        array_type = self.visit(tree.children[0])
+
+        return Type(name= DecafTypes.double_type, arr_type=array_type)
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
