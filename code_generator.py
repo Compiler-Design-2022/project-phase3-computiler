@@ -702,6 +702,17 @@ class CodeGenerator(Interpreter):
         output_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
         return output_code
 
+    def btoi(self, tree):
+        main_code = self.visit(tree.children[1])
+        source_var = GlobalVariables.STACK.pop()
+
+        if source_var.var_type.name != DecafTypes.bool_type:
+            raise SemanticError()
+
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.find_type(DecafTypes.int_type, tree=tree)))
+
+        return main_code
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
