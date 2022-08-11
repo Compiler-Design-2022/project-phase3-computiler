@@ -21,6 +21,26 @@ class MIPS:
         s.s $f1, 0($sp)
     """
 
+    convert_double_to_int = """
+				li.s $f4, -0.5
+				li.s $f6, 0.0
+				l.s $f0, 0($sp)
+				c.eq.s $f0, $f4
+				bc1t dtoi_half_{}
+				c.lt.s $f0, $f6
+				bc1t dtoi_{}
+				li.s $f4, 0.5
+			dtoi_{}:
+				add.s $f0, $f0, $f4
+				cvt.w.s $f2, $f0
+				s.s $f2, 0($sp)
+				j end_dtoi_{}
+			dtoi_half_{}:
+				li.s $f2, 0.0
+				s.s $f2, 0($sp)
+			end_dtoi_{}:
+				"""
+
     bool_const = """
             li $t0, {value}
             addi $sp, $sp, -4
