@@ -58,8 +58,6 @@ if_stmt: IF "(" expr ")" statement (ELSE statement)?
 
 while_stmt: WHILE "(" expr ")" statement
 
-!for_stmt: FOR "(" expr? ";" expr ";" expr? ")" statement
-
 !for_stmt: FOR "(" ";" expr ";" ")" statement -> for_1
     | FOR "(" expr ";" expr ";" ")" statement -> for_2
     | FOR "(" ";" expr ";" expr ")" statement -> for_3
@@ -76,20 +74,20 @@ print_stmt: PRINT "(" actuals ")" ";"
 ?expr: l_value "=" expr -> assign
     | expr0
 
-?expr0: expr0 "||" expr1 -> boolean_or
+?expr0: expr0 "||" expr1 -> logical_or
     | expr1
 
-?expr1: expr1 "&&" expr2 -> boolean_and
+?expr1: expr1 "&&" expr2 -> logical_and
     | expr2
 
-?expr2: expr2 "!=" expr3 -> not_equal
-    | expr2 "==" expr3 -> equal
+?expr2: expr2 "!=" expr3 -> logical_not_equal
+    | expr2 "==" expr3 -> logical_equal
     | expr3
 
-?expr3: expr3 "<" expr4 -> less_than
-    | expr3 ">" expr4 -> greater_than
-    | expr3 "<=" expr4 -> less_equal
-    | expr3 ">=" expr4 -> greater_equal
+?expr3: expr3 "<" expr4 ->logical_less_than
+    | expr3 ">" expr4 -> logical_greater_than
+    | expr3 "<=" expr4 -> logical_less_than_or_equal
+    | expr3 ">=" expr4 -> logical_greater_than_or_equal
     | expr4
 
 ?expr4: expr4 "+" expr5 -> add
@@ -101,7 +99,7 @@ print_stmt: PRINT "(" actuals ")" ";"
     | expr5 "%" expr6 -> module
     | expr6
 
-?expr6: "!" expr6 -> not_expr
+?expr6: "!" expr6 -> logical_not
     | "-" expr6 -> unary_neg
     | expr7
 

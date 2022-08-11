@@ -585,7 +585,7 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def type(self, tree):
-        return tree.symbol_table.find_type(tree.children[0].value, tree=tree)
+        return tree.symbol_table.get_type(tree.children[0].value)
 
     def declare_function(self, tree):
         _, var_1, var_2, var_3 = tree.children[:4]
@@ -614,11 +614,10 @@ class CodeGenerator(Interpreter):
         return '\n'.join(self.visit_children(tree))
 
     def print_stmt(self, tree):
-        _, _, _, expr2_code, _ = self.prepare_calculations(tree)
 
         pre_stack_len = len(GlobalVariables.STACK)
 
-        output = expr2_code
+        output = self.visit(tree.children[1])
 
         if len(GlobalVariables.STACK) == pre_stack_len:
             return output
@@ -626,6 +625,7 @@ class CodeGenerator(Interpreter):
         stack_ptr_pos = 4 * (len(GlobalVariables.STACK) - (1 + pre_stack_len))
 
         for item in GlobalVariables.STACK[pre_stack_len:]:
+            print(item)
             var_type_name = item.var_type.name
             if var_type_name == DecafTypes.int_type:
                 output += MIPSPrintStmt.int_stmt.format(stack_ptr_pos)
@@ -756,6 +756,7 @@ def generate(input_code):
         tree = parser.parse(input_code)
         prepare_main_tree(tree)
         mips_code = CodeGenerator().visit(tree)
+        print(mips_code)
     except ParseError as e:
         return e
     except SemanticError:

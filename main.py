@@ -17,9 +17,9 @@ def main(argv):
         elif opt in ("-o", "--ofile"):
             output_file = arg
 
-    with open('tests/' + input_file, "r") as input_file_data:
+    with open(input_file, "r") as input_file_data:
         code = input_file_data.read()
-    output_file = open('tests/' + output_file, "w")
+    output_file = open(output_file, "w")
     mips_code = generate(code)
     output_file.write(mips_code)
 
