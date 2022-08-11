@@ -21,7 +21,7 @@ class Variable:
 
 
 class Function:
-    def __init__(self, name, formals, return_type, address, size):
+    def __init__(self, name, formals, return_type, address=0, size=0):
         self.name = name
         self.formals = formals
         self.return_type = return_type

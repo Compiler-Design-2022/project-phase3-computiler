@@ -8,7 +8,7 @@ from globals import GlobalVariables
 from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt
 from semantic_error import SemanticError
 from symbol_table import Variable, SymbolTable, Type
-from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater
+from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater, TypeVisitor
 
 
 class CodeGenerator(Interpreter):
@@ -748,7 +748,8 @@ def prepare_main_tree(tree):
     tree.symbol_table.add_type(Type(DecafTypes.void_type, 0))
     tree.symbol_table.add_type(Type(DecafTypes.str_type, 8))
     tree.symbol_table.add_type(Type(DecafTypes.array_type, 4))
-    SymbolTableUpdater().visit_topdown(tree)
+    SymbolTableUpdater().visit(tree)
+    TypeVisitor().visit(tree)
 
 
 def generate(input_code):
