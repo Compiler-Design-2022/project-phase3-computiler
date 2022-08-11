@@ -485,7 +485,6 @@ class MIPS:
         	"""
 
     array_init = """
-    				### array
     				{}
 
     				lw $t1, 0($sp)	# array size
