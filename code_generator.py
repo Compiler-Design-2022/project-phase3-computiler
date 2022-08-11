@@ -735,6 +735,19 @@ class CodeGenerator(Interpreter):
 
         return Type(name= DecafTypes.double_type, arr_type=array_type)
 
+    def initialize_array(self, tree):
+        main_code = self.visit(tree.children[0])
+        array_size = GlobalVariables.STACK.pop()
+
+        array_type = self.visit(tree.children[1])
+
+        CodeGenerator.VARIABLE_NAME_COUNT += 1
+
+        main_code += MIPS.array_init.format(main_code).replace("\t\t\t", "")
+
+        GlobalVariables.STACK.append(Variable(var_type=array_type))
+        return main_code
+
 
 def prepare_main_tree(tree):
     SymbolTableParentUpdater().visit_topdown(tree)
