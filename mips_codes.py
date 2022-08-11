@@ -463,8 +463,6 @@ class MIPS:
         j {function_name}_end
     """
     new_identifier = """
-            	# new object (new_identifier)
-
             	li $v0, 9
             	li $a0, {}
             	syscall
