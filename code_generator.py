@@ -698,7 +698,7 @@ class CodeGenerator(Interpreter):
         if source_var.var_type.name != DecafTypes.bool_type:
             raise SemanticError()
 
-        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.find_type(DecafTypes.int_type, tree=tree)))
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type, tree=tree)))
 
         return main_code
 
@@ -715,7 +715,7 @@ class CodeGenerator(Interpreter):
 
         main_code += MIPS.convert_double_to_int.format(label, label, label, label, label, label).replace("\t\t\t", "")
 
-        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.find_type(DecafTypes.int_type, tree=tree)))
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type, tree=tree)))
 
         return main_code
 
