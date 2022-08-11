@@ -454,14 +454,14 @@ class MIPS:
 
     array_base = "array_{}: .word \"{}\"\n"
 
-    return_stmt = '\t# return\n'
-
-    return_main = """
+    return_calc_expr = """
     		lw $v0, 0($sp)
     		addi $sp, $sp, 4
-
     		"""
 
+    return_back_to_caller = """
+        j {function_name}_end
+    """
     new_identifier = """
             	# new object (new_identifier)
 

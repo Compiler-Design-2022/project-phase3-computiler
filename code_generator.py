@@ -370,19 +370,19 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
-    #class not implemented
+    # class not implemented
     def l_value_identifier(self, tree):
         var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False, depth_one=True)
         GlobalVariables.STACK.append(var)
 
-        output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address, 2) if GlobalVariables.ASSIGN_FLAG else MIPS.l_value_assign_false.format(var.address)
+        output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address,
+                                       2) if GlobalVariables.ASSIGN_FLAG else MIPS.l_value_assign_false.format(
+            var.address)
 
         GlobalVariables.ASSIGN_FLAG = False
 
         return output
 
-    # logical functions or, and, not, equal, not_equal, less than, equal_or_less_than, greater_than,
-    # equal_or_greater_than,
     def logical_or(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
@@ -643,31 +643,21 @@ class CodeGenerator(Interpreter):
         return output
 
     def return_stmt(self, tree):
-        if len(GlobalVariables.FUNCTION_STACK) == 0:
+        if not len(GlobalVariables.FUNCTION_STACK):
             raise SemanticError()
-
         function = GlobalVariables.FUNCTION_STACK[-1]
-
-        code = MIPS.return_stmt
-
         variable = tree.symbol_table.get_type('void')
-
+        output_code = ''
         if len(tree.children) > 1:
-            code += self.visit(tree.children[1])
+            output_code += self.visit(tree.children[1])
             variable = GlobalVariables.STACK.pop()
-
-            # store value
-            code += MIPS.return_main.replace("\t\t\t", "\t")
-
+            output_code += MIPS.return_calc_expr
         if variable.var_type.name != function.return_type.name:
             raise SemanticError()
-
-        # jump to continue
-        code += f"""
-    	j {function.label}_end
-    	""".replace("\t\t", "")
-
-        return code
+        output_code += MIPS.return_back_to_caller.format(
+            function_name=function.label
+        )
+        return output_code
 
     def field(self, tree):
         access_modifier = self.visit(tree.children[0])
@@ -733,7 +723,7 @@ class CodeGenerator(Interpreter):
     def array_type(self, tree):
         array_type = self.visit(tree.children[0])
 
-        return Type(name= DecafTypes.double_type, arr_type=array_type)
+        return Type(name=DecafTypes.double_type, arr_type=array_type)
 
     def initialize_array(self, tree):
         main_code = self.visit(tree.children[0])
