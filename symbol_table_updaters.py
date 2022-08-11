@@ -64,9 +64,12 @@ class SymbolTableUpdater(Interpreter):
         tree.children[4].symbol_table = statement_block_table
         self.visit(tree.children[4])
 
-    # TODO: i don't know how is this symbol table
     def stmt_block(self, tree):
-        pass
+        new_block_table = SymbolTable(parent=tree.symbol_table)
+        for child in tree.children:
+            if isinstance(child, Tree):
+                child.symbol_table = new_block_table
+                self.visit(child)
 
 
 class SymbolTableParentUpdater(Visitor):
