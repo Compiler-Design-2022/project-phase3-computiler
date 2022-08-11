@@ -55,11 +55,6 @@ class SymbolTableUpdater(Interpreter):
         if len(class_stack) > 0:
             function_class = class_stack[-1]
 
-        # access
-        global currect_access_mode
-        access_mode = currect_access_mode
-        if currect_access_mode:
-            currect_access_mode = None
 
         # type
         type_ = Type("void")  # void
@@ -113,11 +108,6 @@ class SymbolTableUpdater(Interpreter):
         if len(class_stack) > 0:
             variable_class = class_stack[-1]
 
-        # access
-        global currect_access_mode
-        access_mode = currect_access_mode
-        if currect_access_mode:
-            currect_access_mode = None
 
         tree.children[0].symbol_table = tree.symbol_table
         self.visit(tree.children[0])
@@ -135,7 +125,7 @@ class SymbolTableUpdater(Interpreter):
             address=IncDataPointer(4),
         )
 
-        tree.symbol_table.add_var(var, tree)
+        tree.symbol_table.find_var(var, tree)
 
         # We need var later (e.g. in formals of funtions)
         stack.append(var)
@@ -238,7 +228,7 @@ class TypeVisitor(Interpreter):
 
     def type(self, tree):
         type_name = tree.children[0].value
-        type_ = tree.symbol_table.find_type(type_name, tree=tree)
+        type_ = tree.symbol_table.get_type(type_name)
 
         return type_
 
@@ -275,7 +265,7 @@ class TypeVisitor(Interpreter):
 
         # name
         func_name = tree.children[1].value
-        function = tree.symbol_table.find_func(func_name, tree=tree)
+        function = tree.symbol_table.get_function(func_name, tree=tree)
 
         function.return_type = type_
 
