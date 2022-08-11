@@ -36,7 +36,8 @@ class CodeGenerator(Interpreter):
     @classmethod
     def fix_stack_ptr_position(cls, dest_pos: int):
         while dest_pos < len(GlobalVariables.STACK):
-            GlobalVariables.STACK.pop()
+            if GlobalVariables.STACK:
+                GlobalVariables.STACK.pop()
 
     def conditional_do_statement(self, tree, con_stmt, bre_stmt, stmt_children_number):
         CodeGenerator.add_continue_and_break_target_labels(
@@ -209,7 +210,7 @@ class CodeGenerator(Interpreter):
 
         result = "\n.text"
 
-        for item in list(*variables, *functions, *classes):
+        for item in [*variables, *functions, *classes]:
             result += self.visit(item)
 
         result += MIPS.main.format(GlobalVariables.CLASS_INIT, GlobalVariables.VAR_INIT)
@@ -587,7 +588,7 @@ class CodeGenerator(Interpreter):
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)
 
-    def declare_function(self, tree):
+    def function_decl(self, tree):
         _, var_1, var_2, var_3 = tree.children[:4]
         function_name = var_1.value
         function = tree.symbol_table.get_function(function_name, tree=tree)
@@ -765,12 +766,12 @@ def generate(input_code):
 
 
 if __name__ == "__main__":
-    inputfile = 'example.d'
+    inputfile = 'tests/BooleanExpressions/t060-boolean-1.d'
     with open(inputfile, "r") as input_file:
         code = input_file.read()
     code = generate(code)
     print("#### code ")
     print(code)
 
-    output_file = open("../tmp/res.mips", "w")
+    output_file = open("tmp/res.mips", "w")
     output_file.write(code)

@@ -1,6 +1,6 @@
 ?start: program
 
-program: macro* decl+
+program: macro* decl+ -> declare_program
 
 ?macro: IMPORT STRINGCONSTANT
     | DEFINE IDENT*
