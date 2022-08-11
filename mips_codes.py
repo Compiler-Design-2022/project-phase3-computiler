@@ -484,6 +484,32 @@ class MIPS:
         	sw $t0, {}($gp)
         	"""
 
+    array_init = """
+    				### array
+    				{}
+
+    				lw $t1, 0($sp)	# array size
+    				addi $sp, $sp, 4
+
+    				ble $t1, $zero, runtimeError
+
+    				add $t0, $t1, 1  # add one more place for size
+
+    				mul $t0, $t0, 4	# array size in bytes
+
+    				li $v0 , 9
+    				move $a0 , $t0
+    				syscall
+
+    				move $s0, $v0		# s0: address of array
+
+    				sw $t1, 0($s0)	# store size in first word
+
+    				addi $sp, $sp, -4
+    				sw $s0, 0($sp)
+
+    				"""
+
 
 class MIPSDouble:
     convert_double_to_int = """
