@@ -81,6 +81,7 @@ class MIPS:
             """
 
     assignment_int = """
+            # assignment
             lw $t0, 0($sp)
     		lw $t1, 4($sp)
     		addi $sp, $sp, 4
@@ -325,6 +326,7 @@ class MIPS:
 				"""
 
     l_value_assign_true = """
+                # lval assign true
 				addi $t0, $gp, {}
 				sw $t0, -4($sp)
 
@@ -334,6 +336,8 @@ class MIPS:
 				"""
 
     l_value_assign_false = """
+                 # lval assign true
+
 				lw $t0, {}($gp)
 				addi $sp, $sp, -4
 				sw $t0, 0($sp)

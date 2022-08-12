@@ -186,7 +186,7 @@ class CodeGenerator(Interpreter):
         codes = []
         for child_code in children_codes:
             if child_code:
-                codes.append(child_code[0])
+                codes.append(child_code)
         return '\n'.join(codes)
 
     def declare_program(self, tree):
@@ -247,8 +247,7 @@ class CodeGenerator(Interpreter):
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(l_var, r_var):
             raise SemanticError(2)
-        if l_var.var_type.name == DecafTypes.int_type:
-            output_code += MIPS.assignment_int
+        output_code += MIPS.assignment_int
         GlobalVariables.STACK.append(l_var)
         return output_code
 
@@ -595,7 +594,7 @@ class CodeGenerator(Interpreter):
             func_label
         )
 
-    def actual_vars(self, tree):
+    def actuals(self, tree):
         return '\n'.join(self.visit_children(tree))
 
     def print_stmt(self, tree):
