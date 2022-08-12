@@ -356,7 +356,24 @@ class CodeGenerator(Interpreter):
             output_code = MIPS.double_const.format(value=value)
 
         elif const_token_type == Constants.str_const:
-            pass
+            value = tree.children[0].value[1:-1]
+            var_type = tree.symbol_table.get_type(DecafTypes.str_type)
+            val_size = len(value) + 1
+            label = CodeGenerator.get_version()
+
+            const_label = len(GlobalVariables.CONSTANTS)
+            GlobalVariables.CONSTANTS.append(value)
+
+            output_code = MIPS.str_const.format(
+                val_size,
+                const_label,
+                label,
+                label,
+                label,
+                label,
+            )
+
+
         elif const_token_type == Constants.null_const:
             var_type = tree.symbol_table.get_type(DecafTypes.null_type)
             output_code += MIPS.null_const
