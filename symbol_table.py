@@ -27,10 +27,6 @@ class Function:
         self.return_type = return_type
         self.address = address
         self.size = size
-        self.change_name(name, prefix)
-
-    def change_name(self, name, prefix=''):
-        self.name = prefix + "func_" + name
 
 
 class SymbolTable:

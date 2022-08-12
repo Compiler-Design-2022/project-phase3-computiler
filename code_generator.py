@@ -428,10 +428,12 @@ class CodeGenerator(Interpreter):
 
         unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
                              (var1.var_type.name == var2.var_type.name or \
-                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool', 'string',
-                                                                                     'array']) or \
-                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool', 'string',
-                                                                                     'array'])))
+                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array']) or \
+                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array'])))
 
         if unknown_equal:
             output_code += MIPS.logical_unknown_equal
@@ -463,10 +465,12 @@ class CodeGenerator(Interpreter):
 
         unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
                              (var1.var_type.name == var2.var_type.name or \
-                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool', 'string',
-                                                                                     'array']) or \
-                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool', 'string',
-                                                                                     'array'])))
+                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array']) or \
+                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array'])))
 
         if unknown_equal:
             output_code += MIPS.logical_unknown_not_equal
@@ -588,7 +592,8 @@ class CodeGenerator(Interpreter):
 
         GlobalVariables.FUNCTION_STACK.pop()
         func_label = function.name
-
+        if func_label == 'main':
+            func_label = 'func_main'
         return MIPS.function.format(
             func_label,
             formal,
