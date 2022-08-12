@@ -605,10 +605,10 @@ class CodeGenerator(Interpreter):
         GlobalVariables.FUNCTION_STACK.pop()
 
         return MIPS.function.format(
-            function.label,
+            function.name,
             formal,
             stmt_block,
-            function.label
+            function.name
         )
 
     def actual_vars(self, tree):
@@ -655,7 +655,7 @@ class CodeGenerator(Interpreter):
         if variable.var_type.name != function.return_type.name:
             raise SemanticError(27)
         output_code += MIPS.return_back_to_caller.format(
-            function_name=function.label
+            function_name=function.name
         )
         return output_code
 
@@ -689,7 +689,7 @@ class CodeGenerator(Interpreter):
         type_ = self.visit(tree.children[0])
         var_name = tree.children[1].value
         variable = tree.symbol_table.find_var(var_name, tree=tree)
-        output_code += MIPS.variable_init.Format(variable.address).replace("\t\t", "\t")
+        output_code += MIPS.variable_init.format(variable.address)
         return output_code
 
     def btoi(self, tree):

@@ -55,7 +55,6 @@ class SymbolTableUpdater(Interpreter):
         if len(class_stack) > 0:
             function_class = class_stack[-1]
 
-
         # type
         type_ = Type("void")  # void
 
@@ -108,16 +107,11 @@ class SymbolTableUpdater(Interpreter):
         if len(class_stack) > 0:
             variable_class = class_stack[-1]
 
-
         tree.children[0].symbol_table = tree.symbol_table
         self.visit(tree.children[0])
         type_ = stack.pop()
 
         var_name = tree.children[1].value
-
-        if variable_class:
-            # add access_mode
-            variable_class.access_modes[var_name] = access_mode
 
         var = Variable(
             name=var_name,
@@ -125,7 +119,7 @@ class SymbolTableUpdater(Interpreter):
             address=IncDataPointer(4),
         )
 
-        tree.symbol_table.find_var(var, tree)
+        tree.symbol_table.add_var(var, tree)
 
         # We need var later (e.g. in formals of funtions)
         stack.append(var)
