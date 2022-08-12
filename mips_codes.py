@@ -451,8 +451,8 @@ class MIPS:
 		.data
 
 		runtimeErrorStr: .asciiz "RUNTIME ERROR"
-		falseStr: .asciiz "false\n"
-		trueStr: .asciiz "true\n"
+		falseStr: .asciiz "false"
+		trueStr: .asciiz "true"
 		newLineStr: .asciiz "\\n"
 		"""
 
