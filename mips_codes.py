@@ -107,7 +107,7 @@ class MIPS:
     div_int = """
             lw $t1, 0($sp)
     		lw $t2, 4($sp)
-    		div $t3, $t1, $t2
+    		div $t3, $t2, $t1
     		sw $t3, 4($sp) 
     		addi $sp, $sp, 4
             """
