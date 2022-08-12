@@ -589,12 +589,14 @@ class CodeGenerator(Interpreter):
         stmt_block = self.visit(var_3)
 
         GlobalVariables.FUNCTION_STACK.pop()
-
+        func_label = function.name
+        if func_label == 'main':
+            func_label = 'func_main'
         return MIPS.function.format(
-            function.name,
+            func_label,
             formal,
             stmt_block,
-            function.name
+            func_label
         )
 
     def actual_vars(self, tree):
@@ -612,7 +614,6 @@ class CodeGenerator(Interpreter):
         stack_ptr_pos = 4 * (len(GlobalVariables.STACK) - (1 + pre_stack_len))
 
         for item in GlobalVariables.STACK[pre_stack_len:]:
-            print(item)
             var_type_name = item.var_type.name
             if var_type_name == DecafTypes.int_type:
                 output += MIPSPrintStmt.int_stmt.format(stack_ptr_pos)
@@ -744,7 +745,6 @@ def generate(input_code):
         tree = parser.parse(input_code)
         prepare_main_tree(tree)
         mips_code = CodeGenerator().visit(tree)
-        print(mips_code)
     except ParseError as e:
         return e
     except SemanticError as e:
