@@ -201,7 +201,7 @@ class CodeGenerator(Interpreter):
         result += MIPS.main.format(GlobalVariables.CLASS_INIT, GlobalVariables.VAR_INIT)
         result += MIPS.side_functions
         segment_code = MIPS.data_segment
-        for index, item in GlobalVariables.CONSTANTS:
+        for index, item in enumerate(GlobalVariables.CONSTANTS):
             segment_code += MIPS.constant_str.format(index, item)
         segment_code += '\n'
         for index, item in GlobalVariables.ARRAYS:
