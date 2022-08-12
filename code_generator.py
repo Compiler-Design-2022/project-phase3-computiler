@@ -599,8 +599,8 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def call(self, tree):
-        function = tree.symbol_table.find_func(
-            tree.chidren[0].value
+        function = tree.symbol_table.get_function(
+            tree.children[0].value
         )
         stack_size = len(GlobalVariables.STACK)
         actuals = self.visit(tree.children[1])
