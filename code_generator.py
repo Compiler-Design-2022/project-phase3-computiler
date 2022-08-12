@@ -52,7 +52,7 @@ class CodeGenerator(Interpreter):
         expression_code = self.visit(tree.children[1])
         expr_var = GlobalVariables.STACK.pop()
         if expr_var.var_type != DecafTypes.int_type:
-            raise SemanticError()
+            raise SemanticError(6)
         output_code = expression_code
         output_code += convert_code
         GlobalVariables.STACK.append(
@@ -73,7 +73,7 @@ class CodeGenerator(Interpreter):
         expression_code = self.visit(tree.children[1])
         expr_var = GlobalVariables.STACK.pop()
         if expr_var.var_type != DecafTypes.double_type:
-            raise SemanticError()
+            raise SemanticError(8)
         output_code = expression_code
         output_code += MIPSDouble.convert_double_to_int
         GlobalVariables.STACK.append(
@@ -109,7 +109,7 @@ class CodeGenerator(Interpreter):
 
     def continue_stmt(self, tree):
         if not len(GlobalVariables.CONTINUE_LOOP_STACK):
-            raise SemanticError()
+            raise SemanticError(5)
         target_label = GlobalVariables.CONTINUE_LOOP_STACK[-1]
         output_code = MIPSConditionalStmt.continue_stmt.format(
             target_label=target_label
@@ -118,7 +118,7 @@ class CodeGenerator(Interpreter):
 
     def break_stmt(self, tree):
         if not len(GlobalVariables.BREAK_LOOP_STACK):
-            raise SemanticError()
+            raise SemanticError(3)
         target_label = GlobalVariables.BREAK_LOOP_STACK[-1]
         output_code = MIPSConditionalStmt.break_stmt.format(
             target_label=target_label
@@ -249,14 +249,14 @@ class CodeGenerator(Interpreter):
         elif var.var_type.name == DecafTypes.double_type:
             output_code += MIPSDouble.unary_neg_double
         else:
-            raise SemanticError()
+            raise SemanticError(29)
         GlobalVariables.STACK.append(var)
         return output_code
 
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
         if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
-            raise SemanticError()
+            raise SemanticError(23)
         output_code += MIPS.module_int
         var_type = tree.symbol_table.get_type('int')
         GlobalVariables.STACK.append(Variable(var_type=var_type))
@@ -264,7 +264,7 @@ class CodeGenerator(Interpreter):
     def assign(self, tree):
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(l_var, r_var):
-            raise SemanticError()
+            raise SemanticError(2)
         if l_var.var_type.name == DecafTypes.int_type:
             output_code += MIPS.assignment_int
         GlobalVariables.STACK.append(l_var)
@@ -273,7 +273,7 @@ class CodeGenerator(Interpreter):
     def div(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
-            raise SemanticError()
+            raise SemanticError(7)
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.div_int
         elif var1.var_type.name == DecafTypes.double_type:
@@ -299,7 +299,7 @@ class CodeGenerator(Interpreter):
     def mul(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
-            raise SemanticError()
+            raise SemanticError(24)
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.mul_int
         elif var1.var_type.name == DecafTypes.double_type:
@@ -310,7 +310,7 @@ class CodeGenerator(Interpreter):
     def sub(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2) and not CodeGenerator.is_var_int_or_double(var1):
-            raise SemanticError()
+            raise SemanticError(28)
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.sub_int
         elif var1.var_type.name == DecafTypes.double_type:
@@ -321,7 +321,7 @@ class CodeGenerator(Interpreter):
     def add(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+            raise SemanticError(1)
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.add_int
         elif var1.var_type.name == DecafTypes.double_type:
@@ -387,7 +387,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_boolean(var1, var2):
-            raise SemanticError()
+            raise SemanticError(22)
 
         output_code += MIPS.logical_or
 
@@ -398,7 +398,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_boolean(var1, var2):
-            raise SemanticError()
+            raise SemanticError(10)
 
         output_code += MIPS.logical_and
 
@@ -413,7 +413,7 @@ class CodeGenerator(Interpreter):
         var = GlobalVariables.STACK.pop()
 
         if var.var_type.name != DecafTypes.bool_type:
-            raise SemanticError()
+            raise SemanticError(20)
 
         out_put += MIPS.logical_not
 
@@ -453,7 +453,7 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.logical_unknown_equal
 
         else:
-            raise SemanticError()
+            raise SemanticError(11)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -488,7 +488,7 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.logical_unknown_not_equal
 
         else:
-            raise SemanticError()
+            raise SemanticError(21)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -497,7 +497,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+            raise SemanticError(16)
 
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.logical_less_than_int
@@ -511,7 +511,7 @@ class CodeGenerator(Interpreter):
             )
 
         else:
-            raise SemanticError()
+            raise SemanticError(17)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -520,7 +520,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+            raise SemanticError(18)
 
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.logical_less_than_or_equal_int
@@ -534,7 +534,7 @@ class CodeGenerator(Interpreter):
             )
 
         else:
-            raise SemanticError()
+            raise SemanticError(19)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -543,7 +543,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+            raise SemanticError(12)
 
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.logical_greater_than_int
@@ -557,7 +557,7 @@ class CodeGenerator(Interpreter):
             )
 
         else:
-            raise SemanticError()
+            raise SemanticError(13)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -566,7 +566,7 @@ class CodeGenerator(Interpreter):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
         if CodeGenerator.are_types_invalid(var1, var2):
-            raise SemanticError()
+            raise SemanticError(14)
 
         if var1.var_type.name == DecafTypes.int_type:
             output_code += MIPS.logical_greater_than_or_equal_int
@@ -580,7 +580,7 @@ class CodeGenerator(Interpreter):
             )
 
         else:
-            raise SemanticError()
+            raise SemanticError(15)
 
         GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
         return output_code
@@ -644,7 +644,7 @@ class CodeGenerator(Interpreter):
 
     def return_stmt(self, tree):
         if not len(GlobalVariables.FUNCTION_STACK):
-            raise SemanticError()
+            raise SemanticError(26)
         function = GlobalVariables.FUNCTION_STACK[-1]
         variable = tree.symbol_table.get_type(DecafTypes.void_type)
         output_code = ''
@@ -653,7 +653,7 @@ class CodeGenerator(Interpreter):
             variable = GlobalVariables.STACK.pop()
             output_code += MIPS.return_calc_expr
         if variable.var_type.name != function.return_type.name:
-            raise SemanticError()
+            raise SemanticError(27)
         output_code += MIPS.return_back_to_caller.format(
             function_name=function.label
         )
@@ -675,7 +675,7 @@ class CodeGenerator(Interpreter):
 
         class_ = type_.class_ref
         if not class_:
-            raise SemanticError()
+            raise SemanticError(25)
 
         object_size = class_.get_object_size() + 1
 
@@ -697,7 +697,7 @@ class CodeGenerator(Interpreter):
         source_var = GlobalVariables.STACK.pop()
 
         if source_var.var_type.name != DecafTypes.bool_type:
-            raise SemanticError()
+            raise SemanticError(4)
 
         GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type, tree=tree)))
 
@@ -708,7 +708,7 @@ class CodeGenerator(Interpreter):
         source_var = GlobalVariables.STACK.pop()
 
         if source_var.var_type.name != DecafTypes.double_type:
-            raise SemanticError()
+            raise SemanticError(9)
 
         CodeGenerator.VARIABLE_NAME_COUNT += 1
 
@@ -761,18 +761,16 @@ def generate(input_code):
         print(mips_code)
     except ParseError as e:
         return e
-    except SemanticError:
+    except SemanticError as e:
         mips_code = MIPS.semantic_error
+        print(e.token)
     return mips_code
 
 
 if __name__ == "__main__":
-    inputfile = 'tests/SemanticError(type1)/t402_error1_3.d'
+    inputfile = 'example.d'
     with open(inputfile, "r") as input_file:
         code = input_file.read()
     code = generate(code)
     print("#### code ")
     print(code)
-
-    output_file = open("tmp/res.s", "w")
-    output_file.write(code)

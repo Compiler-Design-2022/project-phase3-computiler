@@ -247,7 +247,7 @@ class TypeVisitor(Interpreter):
         if class_.parent:
             parent_class = tree.symbol_table.find_type(class_.parent).class_ref
             if not parent_class:
-                raise SemanticError()
+                raise SemanticError(37)
 
             class_.parent = parent_class
 
