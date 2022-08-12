@@ -31,7 +31,7 @@ class CodeGenerator(Interpreter):
 
     @staticmethod
     def decrease_stack_ptr_pos(stack_ptr: int) -> int:
-        return stack_ptr - 4
+        return stack_ptr
 
     @classmethod
     def fix_stack_ptr_position(cls, dest_pos: int):
@@ -51,7 +51,7 @@ class CodeGenerator(Interpreter):
     def convert_int_shared(self, tree, target_type, convert_code):
         expression_code = self.visit(tree.children[1])
         expr_var = GlobalVariables.STACK.pop()
-        if expr_var.var_type != DecafTypes.int_type:
+        if expr_var.var_type.name != DecafTypes.int_type:
             raise SemanticError(6)
         output_code = expression_code
         output_code += convert_code
@@ -68,20 +68,6 @@ class CodeGenerator(Interpreter):
             target_type=DecafTypes.bool_type,
             convert_code=MIPS.convert_int_to_bool
         )
-
-    def double_to_int(self, tree):
-        expression_code = self.visit(tree.children[1])
-        expr_var = GlobalVariables.STACK.pop()
-        if expr_var.var_type != DecafTypes.double_type:
-            raise SemanticError(8)
-        output_code = expression_code
-        output_code += MIPSDouble.convert_double_to_int
-        GlobalVariables.STACK.append(
-            Variable(
-                var_type=tree.symbol_table.get_type(DecafTypes.int_type)
-            )
-        )
-        return output_code
 
     def int_to_double(self, tree):
         return self.convert_int_shared(
@@ -200,7 +186,7 @@ class CodeGenerator(Interpreter):
         codes = []
         for child_code in children_codes:
             if child_code:
-                codes.append(child_code)
+                codes.append(child_code[0])
         return '\n'.join(codes)
 
     def declare_program(self, tree):
@@ -692,7 +678,7 @@ class CodeGenerator(Interpreter):
         output_code += MIPS.variable_init.format(variable.address)
         return output_code
 
-    def btoi(self, tree):
+    def bool_to_int(self, tree):
         main_code = self.visit(tree.children[1])
         source_var = GlobalVariables.STACK.pop()
 
@@ -703,7 +689,7 @@ class CodeGenerator(Interpreter):
 
         return main_code
 
-    def dtoi(self, tree):
+    def double_to_int(self, tree):
         main_code = self.visit(tree.children[1])
         source_var = GlobalVariables.STACK.pop()
 
@@ -716,7 +702,7 @@ class CodeGenerator(Interpreter):
 
         main_code += MIPS.convert_double_to_int.format(label, label, label, label, label, label).replace("\t\t\t", "")
 
-        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type, tree=tree)))
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type)))
 
         return main_code
 

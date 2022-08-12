@@ -236,10 +236,10 @@ class TypeVisitor(Interpreter):
 
         class_name = tree.children[1].value
 
-        class_ = tree.symbol_table.find_type(class_name).class_ref
+        class_ = tree.symbol_table.get_type(class_name).class_ref
 
         if class_.parent:
-            parent_class = tree.symbol_table.find_type(class_.parent).class_ref
+            parent_class = tree.symbol_table.get_type(class_.parent).class_ref
             if not parent_class:
                 raise SemanticError(37)
 
