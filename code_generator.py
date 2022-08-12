@@ -161,10 +161,10 @@ class CodeGenerator(Interpreter):
     def for_4(self, tree):
         return self.for_shared_part(
             tree,
-            expr_1=self.visit(tree.children[1]),
-            expr_2=self.visit(tree.children[2]),
-            expr_3=self.visit(tree.children[3]),
-            statement_num=4
+            expr_1=self.visit(tree.children[2]),
+            expr_2=self.visit(tree.children[4]),
+            expr_3=self.visit(tree.children[6]),
+            statement_num=8
         )
 
     def if_stmt(self, tree):
