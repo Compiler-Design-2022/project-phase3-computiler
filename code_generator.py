@@ -1,3 +1,4 @@
+from operator import le
 from typing import List
 
 from lark import Lark, ParseError
@@ -5,7 +6,7 @@ from lark.visitors import Interpreter
 
 from decaf_enums import Constants, DecafTypes, LoopLabels
 from globals import GlobalVariables
-from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt
+from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials
 from semantic_error import SemanticError
 from symbol_table import Variable, SymbolTable, Type
 from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater, TypeVisitor
@@ -596,6 +597,36 @@ class CodeGenerator(Interpreter):
 
         GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.bool_type)))
         return output_code
+
+    def call(self, tree):
+        function = tree.symbol_table.find_func(
+            tree.chidren[0].value
+        )
+        stack_size = len(GlobalVariables.STACK)
+        actuals = self.visit(tree.children[1])
+        args_num = len(GlobalVariables.STACK) - stack_size
+        if args_num != len(function.formals):
+            raise SemanticError(101)
+        formals_idx = args_num - 1
+        while len(GlobalVariables.STACK) > stack_size:
+            formal = function.formals[i]
+            arg = GlobalVariables.STACK.pop()
+            if arg.var_type.name != formal.var_type.name:
+                raise SemanticError(102)
+            i -= 1
+        function_label = function.name
+        if function_label == 'main':
+            function_label = 'func_main'
+        output_code = MIPSSpecials.method_call.format(
+            actuals=actuals,
+            func_name=function_label,
+            args_size=args_num * 4 
+        )
+        if function.return_type:
+            output_code += MIPSSpecials.method_call_return
+        GlobalVariables.STACK.append(Variable(var_type=function.return_type))
+        return output_code
+
 
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)

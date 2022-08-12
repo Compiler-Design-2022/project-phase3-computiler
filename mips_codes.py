@@ -739,3 +739,15 @@ class MIPSPrintStmt:
 				syscall
 				addi $sp, $sp, {}
             """
+
+class MIPSSpecials:
+	method_call = """
+		{actuals}
+		jal {func_name}
+		addi $sp, $sp, {args_size}
+	"""
+
+	method_call_return = """
+		sw $v0, -4($sp)
+		addi $sp, $sp, -4
+	"""
