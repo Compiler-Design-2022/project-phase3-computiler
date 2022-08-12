@@ -166,6 +166,8 @@ class CodeGenerator(Interpreter):
 
     def if_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
+        if tree.children[1].data == 'l_value_ident':
+            raise SemanticError(103)
         else_statement_code = ''
         statement_code = self.visit(tree.children[2])
         if len(tree.children) > 3:
@@ -384,7 +386,7 @@ class CodeGenerator(Interpreter):
 
     # class not implemented
     def l_value_ident(self, tree):
-        var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False)
+        var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=True)
         GlobalVariables.STACK.append(var)
         output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address,
                                        2) if GlobalVariables.ASSIGN_FLAG else MIPS.l_value_assign_false.format(
@@ -608,11 +610,11 @@ class CodeGenerator(Interpreter):
             raise SemanticError(101)
         formals_idx = args_num - 1
         while len(GlobalVariables.STACK) > stack_size:
-            formal = function.formals[i]
+            formal = function.formals[formals_idx]
             arg = GlobalVariables.STACK.pop()
             if arg.var_type.name != formal.var_type.name:
                 raise SemanticError(102)
-            i -= 1
+            formals_idx -= 1
         function_label = function.name
         if function_label == 'main':
             function_label = 'func_main'
@@ -746,7 +748,7 @@ class CodeGenerator(Interpreter):
         if source_var.var_type.name != DecafTypes.bool_type:
             raise SemanticError(4)
 
-        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type, tree=tree)))
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type)))
 
         return main_code
 
