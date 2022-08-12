@@ -213,17 +213,14 @@ class TypeVisitor(Interpreter):
 
     def variable(self, tree):
         global variable_inits_code
-
         type_ = self.visit(tree.children[0])
         var_name = tree.children[1].value
         variable = tree.symbol_table.find_var(var_name, tree=tree)
-
         variable.type_ = type_
 
     def type(self, tree):
         type_name = tree.children[0].value
         type_ = tree.symbol_table.get_type(type_name)
-
         return type_
 
     def array_type(self, tree):
@@ -252,7 +249,6 @@ class TypeVisitor(Interpreter):
     def function_decl(self, tree):
 
         # type
-
         type_ = Type("void")
         if isinstance(tree.children[0], Tree):
             type_ = self.visit(tree.children[0])

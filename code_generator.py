@@ -193,7 +193,6 @@ class CodeGenerator(Interpreter):
         variables = [item for item in tree.children if item.data == 'variable']
         functions = [item for item in tree.children if item.data == 'function_decl']
         classes = [item for item in tree.children if item.data == 'class_decl']
-
         result = "\n.text"
 
         for item in [*variables, *functions, *classes]:
@@ -202,16 +201,13 @@ class CodeGenerator(Interpreter):
         result += MIPS.main.format(GlobalVariables.CLASS_INIT, GlobalVariables.VAR_INIT)
         result += MIPS.side_functions
         segment_code = MIPS.data_segment
-
         for index, item in GlobalVariables.CONSTANTS:
             segment_code += MIPS.constant_str.format(index, item)
         segment_code += '\n'
         for index, item in GlobalVariables.ARRAYS:
             segment_code += MIPS.array_base.format(index, item)
         segment_code += '\n'
-
         result = segment_code + result
-
         return result
 
     @staticmethod
@@ -271,8 +267,8 @@ class CodeGenerator(Interpreter):
         var1_expr = tree.children[0]
         var2_expr = tree.children[1]
         expr1_code = self.visit(var1_expr)
-        expr2_code = self.visit(var2_expr)
         var1 = GlobalVariables.STACK.pop()
+        expr2_code = self.visit(var2_expr)
         var2 = GlobalVariables.STACK.pop()
         output_code = expr1_code
         output_code += expr2_code
@@ -339,7 +335,7 @@ class CodeGenerator(Interpreter):
         output_code = ''
         var_type = None
         if const_token_type == Constants.bool_const:
-            value = int(tree.children[0].value)
+            value = int(bool(tree.children[0].value))
             var_type = tree.symbol_table.get_type(DecafTypes.bool_type)
             output_code += MIPS.bool_const.format(value=value)
         elif const_token_type == Constants.int_const:
@@ -357,7 +353,7 @@ class CodeGenerator(Interpreter):
         return output_code
 
     # class not implemented
-    def l_value_identifier(self, tree):
+    def l_value_ident(self, tree):
         var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False, depth_one=True)
         GlobalVariables.STACK.append(var)
 
