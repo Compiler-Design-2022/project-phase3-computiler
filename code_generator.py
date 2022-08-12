@@ -135,27 +135,27 @@ class CodeGenerator(Interpreter):
         return self.for_shared_part(
             tree,
             expr_1='',
-            expr_2=self.visit(tree.children[1]),
+            expr_2=self.visit(tree.children[3]),
             expr_3='',
-            statement_num=2
+            statement_num=6
         )
 
     def for_2(self, tree):
         return self.for_shared_part(
             tree,
-            expr_1=self.visit(tree.children[1]),
-            expr_2=self.visit(tree.children[2]),
+            expr_1=self.visit(tree.children[2]),
+            expr_2=self.visit(tree.children[4]),
             expr_3='',
-            statement_num=3
+            statement_num=7
         )
 
     def for_3(self, tree):
         return self.for_shared_part(
             tree,
             expr_1='',
-            expr_2=self.visit(tree.children[1]),
-            expr_3=self.visit(tree.children[2]),
-            statement_num=3
+            expr_2=self.visit(tree.children[3]),
+            expr_3=self.visit(tree.children[5]),
+            statement_num=7
         )
 
     def for_4(self, tree):
