@@ -157,43 +157,43 @@ class SymbolTableUpdater(Interpreter):
 
 
     def for_1(self, tree):
-        tree.children[1].symbol_table = tree.symbol_table
-        self.visit(tree.children[1])
-        statement_block_table = SymbolTable(parent=tree.symbol_table)
-        tree.children[2].symbol_table = statement_block_table
-        self.visit(tree.children[2])
-
-
-    def for_2(self, tree):
-        tree.children[1].symbol_table = tree.symbol_table
-        self.visit(tree.children[1])
-        tree.children[2].symbol_table = tree.symbol_table
-        self.visit(tree.children[2])
-        statement_block_table = SymbolTable(parent=tree.symbol_table)
-        tree.children[3].symbol_table = statement_block_table
-        self.visit(tree.children[3])
-
-
-    def for_3(self, tree):
-        tree.children[1].symbol_table = tree.symbol_table
-        self.visit(tree.children[1])
-        tree.children[2].symbol_table = tree.symbol_table
-        self.visit(tree.children[2])
-        statement_block_table = SymbolTable(parent=tree.symbol_table)
-        tree.children[3].symbol_table = statement_block_table
-        self.visit(tree.children[3])
-
-
-    def for_4(self, tree):
-        tree.children[1].symbol_table = tree.symbol_table
-        self.visit(tree.children[1])
-        tree.children[2].symbol_table = tree.symbol_table
-        self.visit(tree.children[2])
         tree.children[3].symbol_table = tree.symbol_table
         self.visit(tree.children[3])
         statement_block_table = SymbolTable(parent=tree.symbol_table)
-        tree.children[4].symbol_table = statement_block_table
+        tree.children[6].symbol_table = statement_block_table
+        self.visit(tree.children[6])
+
+
+    def for_2(self, tree):
+        tree.children[2].symbol_table = tree.symbol_table
+        self.visit(tree.children[2])
+        tree.children[4].symbol_table = tree.symbol_table
         self.visit(tree.children[4])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[7].symbol_table = statement_block_table
+        self.visit(tree.children[7])
+
+
+    def for_3(self, tree):
+        tree.children[3].symbol_table = tree.symbol_table
+        self.visit(tree.children[3])
+        tree.children[5].symbol_table = tree.symbol_table
+        self.visit(tree.children[5])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[7].symbol_table = statement_block_table
+        self.visit(tree.children[7])
+
+
+    def for_4(self, tree):
+        tree.children[2].symbol_table = tree.symbol_table
+        self.visit(tree.children[2])
+        tree.children[4].symbol_table = tree.symbol_table
+        self.visit(tree.children[4])
+        tree.children[6].symbol_table = tree.symbol_table
+        self.visit(tree.children[6])
+        statement_block_table = SymbolTable(parent=tree.symbol_table)
+        tree.children[8].symbol_table = statement_block_table
+        self.visit(tree.children[8])
 
 
     def stmt_block(self, tree):
