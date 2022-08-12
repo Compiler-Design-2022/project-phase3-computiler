@@ -169,6 +169,10 @@ class CodeGenerator(Interpreter):
         statement_code = self.visit(tree.children[2])
         if len(tree.children) > 3:
             else_statement_code = self.visit(tree.children[4])
+            if not else_statement_code:
+                else_statement_code = ''
+        if not statement_code:
+            statement_code = ''
         output_code = MIPSConditionalStmt.if_stmt.format(
             expression_code=expression_code,
             version=CodeGenerator.get_version(),
@@ -430,10 +434,7 @@ class CodeGenerator(Interpreter):
     def logical_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
-        # if CodeGenerator.are_types_invalid(var1, var2):
-        #     raise SemanticError()
-
-        if var1.var_type == DecafTypes.double_type:
+        if var1.var_type.name == DecafTypes.double_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
                 MIPS.logical_double_equal,
@@ -441,7 +442,7 @@ class CodeGenerator(Interpreter):
                 2
             )
 
-        elif var1.var_type == DecafTypes.str_type:
+        elif var1.var_type.name == DecafTypes.str_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
                 MIPS.logical_string_equal,
@@ -470,7 +471,7 @@ class CodeGenerator(Interpreter):
     def logical_not_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
-        if var1.var_type == DecafTypes.double_type:
+        if var1.var_type.name == DecafTypes.double_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
                 MIPS.logical_double_not_equal,
@@ -478,7 +479,7 @@ class CodeGenerator(Interpreter):
                 2
             )
 
-        elif var1.var_type == DecafTypes.str_type:
+        elif var1.var_type.name == DecafTypes.str_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
                 MIPS.logical_sring_not_equal,
