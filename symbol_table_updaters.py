@@ -130,6 +130,11 @@ class SymbolTableUpdater(Interpreter):
         mem_type = stack.pop()
         stack.append(Type("array", arr_type=mem_type))
 
+    def access_mode(self, tree):
+        if tree.children:
+            return tree.children[0].value
+        return 'public'
+
 
 def if_stmt(self, tree):
     tree.children[1].symbol_table = tree.symbol_table
