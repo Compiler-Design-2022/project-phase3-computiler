@@ -567,7 +567,7 @@ class MIPSDouble:
     sub = """
         l.s $f0, 0($sp)
         l.s $f1, 4($sp)
-        sub.s $f2, $f0, $f1
+        sub.s $f2, $f1, $f0
         addi $sp, $sp, 4
         s.s $f2, 0($sp)
     """
@@ -583,7 +583,7 @@ class MIPSDouble:
     div = """
         l.s $f1, 0($sp)
 		l.s $f2, 4($sp)
-		div.s $f0, $f1, $f2
+		div.s $f0, $f2, $f1
 		s.s $f0, 4($sp) 
 		addi $sp, $sp, 4
     """
