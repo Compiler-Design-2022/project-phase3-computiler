@@ -93,7 +93,7 @@ class MIPS:
     sub_int = """
             lw $t1, 0($sp)
 			lw $t2, 4($sp)
-			sub $t3, $t1, $t2
+			sub $t3, $t2, $t1
 			sw $t3, 4($sp) 
 			addi $sp, $sp, 4
             """
@@ -485,7 +485,7 @@ class MIPS:
 		runtimeErrorStr: .asciiz "RUNTIME ERROR"
 		falseStr: .asciiz "false"
 		trueStr: .asciiz "true"
-		newLineStr: .asciiz "\\n"
+		newLineStr: .asciiz "\n"
 		"""
 
     constant_str = "constantStr_{}: .asciiz \"{}\"\n"
@@ -734,7 +734,7 @@ class MIPSPrintStmt:
             """
     new_line_stmt = """
 				la $a0, newLineStr
-				li $v0, 4
+				addi $v0, $zero, 4
 				syscall
 				addi $sp, $sp, {}
             """
