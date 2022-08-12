@@ -82,11 +82,13 @@ class MIPS:
 
     assignment_int = """
             # assignment
-            lw $t0, 0($sp)
-    		lw $t1, 4($sp)
-    		addi $sp, $sp, 4
-    		sw $t0, 0($t1)
-    		sw $t0, 0($sp) 
+                lw $t0, 0($sp)
+				addi $sp, $sp, 4
+				lw $t1, 4($sp) # load address from stack
+				addi $sp, $sp, 8
+				sw $t0, 0($t1)
+				addi $sp, $sp, -4
+				sw $t0, 0($sp) 
             """
 
     module_int = """
