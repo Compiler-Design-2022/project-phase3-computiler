@@ -6,7 +6,7 @@ from lark.visitors import Interpreter
 
 from decaf_enums import Constants, DecafTypes, LoopLabels
 from globals import GlobalVariables
-from mips_codes import MIPS, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials
+from mips_codes import MIPS, MIPSArray, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials
 from semantic_error import SemanticError
 from symbol_table import Variable, SymbolTable, Type
 from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater, TypeVisitor
@@ -751,6 +751,30 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.int_type)))
 
         return main_code
+
+    def l_value_array(self, tree):
+        output_code = self.visit(tree.children[0])
+        var = GlobalVariables.STACK.pop()
+        output_code += self.visit(tree.children[1])
+        index = GlobalVariables.STACK.pop()
+        if index.var_type.name != DecafTypes.int_type:
+            raise SemanticError(104)
+        if var.var_type.name != DecafTypes.array_type:
+            raise SemanticError(105)
+    
+        assign_code = ''
+        if GlobalVariables.ASSIGN_FLAG:
+            assign_code = MIPSArray.array_assign
+        GlobalVariables.ASSIGN_FLAG = False
+        GlobalVariables.STACK.append(
+            Variable(
+                var_type=var.var_type
+            )
+        )
+        output_code += MIPSArray.new_array_var.format(
+            assign_code=assign_code
+        )
+        return output_code
 
     def double_to_int(self, tree):
         main_code = self.visit(tree.children[1])

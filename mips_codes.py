@@ -150,6 +150,7 @@ class MIPS:
     		la $a0 , errorMsg
     		addi $v0 , $zero, 4
     		syscall
+			jr $ra
     		.data
     		errorMsg: .asciiz "Semantic Error"
     		"""
@@ -749,5 +750,26 @@ class MIPSSpecials:
 
 	method_call_return = """
 		sw $v0, -4($sp)
+		addi $sp, $sp, -4
+	"""
+
+class MIPSArray:
+	array_assign = """
+		sw $t1, -4($sp)
+		addi $sp, $sp, -4
+	"""
+
+	new_array_var = """
+		lw $t0, 0($sp)
+		addi $sp, $sp, 4
+		lw $t1, 0($sp)
+		addi $sp, $sp, 4
+		lw $t2, 0($t1)
+		addi $t0, $t0, 1
+		mul $t0, $t0, 4
+		add $t1, $t1, $t0
+		{assign_code}
+		lw $t0, 0($t1)
+		sw $t0, -4($sp)
 		addi $sp, $sp, -4
 	"""
