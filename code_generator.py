@@ -244,6 +244,7 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
 
     def assign(self, tree):
+        GlobalVariables.ASSIGN_FLAG = True
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
         if CodeGenerator.are_types_invalid(l_var, r_var):
             raise SemanticError(2)
