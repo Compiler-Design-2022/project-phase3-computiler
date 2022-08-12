@@ -116,6 +116,8 @@ class CodeGenerator(Interpreter):
             bre_stmt=LoopLabels.for_break_label.format(version=version),
             stmt_children_number=statement_num
         )
+        if not statement_code:
+            statement_code = ''
         output_code = MIPSConditionalStmt.for_stmt.format(
             version=version,
             expression_code_1=expression_code_1,
@@ -663,6 +665,9 @@ class CodeGenerator(Interpreter):
             output_code += MIPS.return_calc_expr
         if variable.var_type.name != function.return_type.name:
             raise SemanticError(27)
+        function_label = function.name
+        if function_label == 'main':
+            function_label = 'func_main'
         output_code += MIPS.return_back_to_caller.format(
             function_name=function.name
         )
