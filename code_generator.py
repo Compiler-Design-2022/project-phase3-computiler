@@ -379,7 +379,7 @@ class CodeGenerator(Interpreter):
 
     # class not implemented
     def l_value_ident(self, tree):
-        var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False, depth_one=True)
+        var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False)
         GlobalVariables.STACK.append(var)
 
         output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address,
@@ -670,7 +670,7 @@ class CodeGenerator(Interpreter):
         if function_label == 'main':
             function_label = 'func_main'
         output_code += MIPS.return_back_to_caller.format(
-            function_name=function.name
+            function_name=function_label
         )
         return output_code
 
