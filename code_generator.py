@@ -426,11 +426,11 @@ class CodeGenerator(Interpreter):
                 10
             )
 
-        unknown_equal = bool((not (var1.type_.name == 'null' and var2.type_.name == 'null')) and \
-                             (var1.type_.name == var2.type_.name or \
-                              (var1.type_.name == 'null' and var2.type_.name not in ['double', 'int', 'bool', 'string',
+        unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
+                             (var1.var_type.name == var2.var_type.name or \
+                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool', 'string',
                                                                                      'array']) or \
-                              (var2.type_.name == 'null' and var1.type_.name not in ['double', 'int', 'bool', 'string',
+                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool', 'string',
                                                                                      'array'])))
 
         if unknown_equal:
@@ -461,11 +461,11 @@ class CodeGenerator(Interpreter):
                 10
             )
 
-        unknown_equal = bool((not (var1.type_.name == 'null' and var2.type_.name == 'null')) and \
-                             (var1.type_.name == var2.type_.name or \
-                              (var1.type_.name == 'null' and var2.type_.name not in ['double', 'int', 'bool', 'string',
+        unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
+                             (var1.var_type.name == var2.var_type.name or \
+                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool', 'string',
                                                                                      'array']) or \
-                              (var2.type_.name == 'null' and var1.type_.name not in ['double', 'int', 'bool', 'string',
+                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool', 'string',
                                                                                      'array'])))
 
         if unknown_equal:
@@ -657,9 +657,9 @@ class CodeGenerator(Interpreter):
 
     def new_identifier(self, tree):
         ident_name = tree.children[1].value
-        type_ = tree.symbol_table.get_type(ident_name)
+        var_type = tree.symbol_table.get_type(ident_name)
 
-        class_ = type_.class_ref
+        class_ = var_type.class_ref
         if not class_:
             raise SemanticError(25)
 
@@ -667,12 +667,12 @@ class CodeGenerator(Interpreter):
 
         code = MIPS.new_identifier.Format(object_size * 4, class_.address).replace("\t\t", "\t")
 
-        GlobalVariables.STACK.append(Variable(var_type=type_))
+        GlobalVariables.STACK.append(Variable(var_type=var_type))
         return code
 
     def variable(self, tree):
         output_code = ''
-        type_ = self.visit(tree.children[0])
+        var_type = self.visit(tree.children[0])
         var_name = tree.children[1].value
         variable = tree.symbol_table.find_var(var_name, tree=tree)
         output_code += MIPS.variable_init.format(variable.address)
