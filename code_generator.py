@@ -566,7 +566,7 @@ class CodeGenerator(Interpreter):
         else:
             raise SemanticError(15)
 
-        GlobalVariables.STACK.append(Variable(var_type=var1.var_type))
+        GlobalVariables.STACK.append(Variable(var_type=tree.symbol_table.get_type(DecafTypes.bool_type)))
         return output_code
 
     def type(self, tree):
