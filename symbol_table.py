@@ -64,7 +64,7 @@ class SymbolTable:
 
     def get_function(self, func_name, tree=None, rise_error=True, depth=1):
         if self.parent and depth == 1:
-            return self.parent.find_func(func_name, tree, rise_error)
+            return self.parent.get_function(func_name, tree, rise_error)
         if func_name in self.functions:
             return self.functions.get(func_name, SemanticError(36))
 

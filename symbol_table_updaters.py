@@ -135,7 +135,6 @@ class SymbolTableUpdater(Interpreter):
             return tree.children[0].value
         return 'public'
 
-
     def if_stmt(self, tree):
         tree.children[1].symbol_table = tree.symbol_table
         self.visit(tree.children[1])
@@ -147,7 +146,6 @@ class SymbolTableUpdater(Interpreter):
             tree.children[4].symbol_table = else_statement_block_table
             self.visit(tree.children[4])
 
-
     def while_stmt(self, tree):
         tree.children[1].symbol_table = tree.symbol_table
         self.visit(tree.children[1])
@@ -155,14 +153,12 @@ class SymbolTableUpdater(Interpreter):
         tree.children[2].symbol_table = statement_block_table
         self.visit(tree.children[2])
 
-
     def for_1(self, tree):
         tree.children[3].symbol_table = tree.symbol_table
         self.visit(tree.children[3])
         statement_block_table = SymbolTable(parent=tree.symbol_table)
         tree.children[6].symbol_table = statement_block_table
         self.visit(tree.children[6])
-
 
     def for_2(self, tree):
         tree.children[2].symbol_table = tree.symbol_table
@@ -173,7 +169,6 @@ class SymbolTableUpdater(Interpreter):
         tree.children[7].symbol_table = statement_block_table
         self.visit(tree.children[7])
 
-
     def for_3(self, tree):
         tree.children[3].symbol_table = tree.symbol_table
         self.visit(tree.children[3])
@@ -182,7 +177,6 @@ class SymbolTableUpdater(Interpreter):
         statement_block_table = SymbolTable(parent=tree.symbol_table)
         tree.children[7].symbol_table = statement_block_table
         self.visit(tree.children[7])
-
 
     def for_4(self, tree):
         tree.children[2].symbol_table = tree.symbol_table
@@ -194,7 +188,6 @@ class SymbolTableUpdater(Interpreter):
         statement_block_table = SymbolTable(parent=tree.symbol_table)
         tree.children[8].symbol_table = statement_block_table
         self.visit(tree.children[8])
-
 
     def stmt_block(self, tree):
         new_block_table = SymbolTable(parent=tree.symbol_table)

@@ -386,7 +386,6 @@ class CodeGenerator(Interpreter):
     def l_value_ident(self, tree):
         var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=False)
         GlobalVariables.STACK.append(var)
-
         output = MIPS.set_multiple_var(MIPS.l_value_assign_true, var.address,
                                        2) if GlobalVariables.ASSIGN_FLAG else MIPS.l_value_assign_false.format(
             var.address)
