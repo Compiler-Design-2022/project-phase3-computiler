@@ -339,7 +339,7 @@ class CodeGenerator(Interpreter):
             var_type = tree.symbol_table.get_type(DecafTypes.int_type)
             output_code += MIPS.int_const.format(value=value)
         elif const_token_type == Constants.double_const:
-            value = tree.children[0].value
+            value = tree.children[0].value.lower()
             var_type = tree.symbol_table.get_type(DecafTypes.double_type)
             if value[-1] == '.':
                 value += '0'
