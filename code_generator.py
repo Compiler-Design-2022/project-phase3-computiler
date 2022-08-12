@@ -345,7 +345,16 @@ class CodeGenerator(Interpreter):
             var_type = tree.symbol_table.get_type(DecafTypes.int_type)
             output_code += MIPS.int_const.format(value=value)
         elif const_token_type == Constants.double_const:
-            pass
+            value = tree.children[0].value
+            var_type = tree.symbol_table.get_type(DecafTypes.double_type)
+            if value[-1] == '.':
+                value += '0'
+            if value[0] == '.':
+                value = '0' + value
+            if '.e' in value:
+                value.replace('.e', '.0e')
+            output_code = MIPS.double_const.format(value=value)
+
         elif const_token_type == Constants.str_const:
             pass
         elif const_token_type == Constants.null_const:

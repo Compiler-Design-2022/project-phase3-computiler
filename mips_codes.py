@@ -47,6 +47,38 @@ class MIPS:
             sw $t0, 0($sp)
             """
     int_const = bool_const
+
+    double_const = """
+				li.s $f2, {value}
+				addi $sp, $sp, -4
+				s.s $f2, 0($sp)
+				"""
+
+    str_const = """
+				li $v0, 9		
+				li $a0, {}
+				syscall
+
+				move $s0, $v0		
+
+				addi $sp, $sp, -4
+				sw $s0, 0($sp)
+
+				la $s1, constantStr_{}
+				li $t1, 0
+
+			constant_str_{}:
+				lb $t1, 0($s1)
+				sb $t1, 0($s0)
+				beq $t1, $zero, constant_str_end_{} 
+				addi $s1, $s1, 1
+				addi $s0, $s0, 1
+				b constant_str_{}
+
+			constant_str_end_{}:
+
+				"""
+
     null_const = """
 			addi $sp, $sp, -4
 			sw $zero, 0($sp)
