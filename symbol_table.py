@@ -21,12 +21,16 @@ class Variable:
 
 
 class Function:
-    def __init__(self, name, formals, return_type, address=0, size=0):
+    def __init__(self, name, formals, return_type, address=0, size=0, prefix=''):
         self.name = name
         self.formals = formals
         self.return_type = return_type
         self.address = address
         self.size = size
+        self.change_name(name, prefix)
+
+    def change_name(self, name, prefix=''):
+        self.name = prefix + "func_" + name
 
 
 class SymbolTable:

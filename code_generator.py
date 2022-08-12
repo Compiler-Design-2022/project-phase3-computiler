@@ -588,8 +588,7 @@ class CodeGenerator(Interpreter):
 
         GlobalVariables.FUNCTION_STACK.pop()
         func_label = function.name
-        if func_label == 'main':
-            func_label = 'func_main'
+
         return MIPS.function.format(
             func_label,
             formal,
