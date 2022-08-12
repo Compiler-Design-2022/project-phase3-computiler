@@ -677,7 +677,8 @@ class CodeGenerator(Interpreter):
         var_name = tree.children[1].value
         variable = tree.symbol_table.find_var(var_name, tree=tree)
         output_code += MIPS.variable_init.format(variable.address)
-        return output_code
+        GlobalVariables.VAR_INIT += output_code
+        return ''
 
     def bool_to_int(self, tree):
         main_code = self.visit(tree.children[1])
