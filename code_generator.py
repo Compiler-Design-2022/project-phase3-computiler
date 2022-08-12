@@ -334,7 +334,9 @@ class CodeGenerator(Interpreter):
         output_code = ''
         var_type = None
         if const_token_type == Constants.bool_const:
-            value = int(bool(tree.children[0].value))
+            value = 1
+            if tree.children[0].value == 'false':
+                value = 0
             var_type = tree.symbol_table.get_type(DecafTypes.bool_type)
             output_code += MIPS.bool_const.format(value=value)
         elif const_token_type == Constants.int_const:
@@ -618,9 +620,9 @@ class CodeGenerator(Interpreter):
                 output += MIPSPrintStmt.bool_stmt.format(stack_ptr_pos)
             elif var_type_name == DecafTypes.str_type:
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
-            output += MIPSPrintStmt.new_line_stmt.format(stack_ptr_pos)
             stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
 
+        output += MIPSPrintStmt.new_line_stmt.format(stack_ptr_pos)
         CodeGenerator.fix_stack_ptr_position(stack_ptr_pos)
 
         return output
