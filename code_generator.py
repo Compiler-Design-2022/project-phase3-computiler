@@ -238,6 +238,7 @@ class CodeGenerator(Interpreter):
         output_code += MIPS.module_int
         var_type = tree.symbol_table.get_type('int')
         GlobalVariables.STACK.append(Variable(var_type=var_type))
+        return output_code
 
     def assign(self, tree):
         GlobalVariables.ASSIGN_FLAG = True

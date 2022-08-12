@@ -127,7 +127,8 @@ class MIPS:
             lw $t0, 0($sp)
 			lw $t1, 4($sp)
 			div $t1, $t0
-			sw $hi, 4($sp) 
+			mfhi $t2
+			sw $t2, 4($sp) 
 			addi $sp, $sp, 4
             """
 
