@@ -279,6 +279,11 @@ class CodeGenerator(Interpreter):
         class_init_codes = ''
         class_init_codes += MIPS.class_init.format(class_.name, vtable_size * 4, class_.address).replace("\t\t", "\t")
 
+        current_class = class_
+        parent_classes = []
+        while current_class:
+            parent_classes.append(current_class)
+            current_class = current_class.parent
 
         GlobalVariables.STACK_CLASS.pop()
 
