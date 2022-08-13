@@ -853,10 +853,10 @@ class CodeGenerator(Interpreter):
         code += self.visit(tree.children[1])
         index_var = GlobalVariables.STACK.pop()
 
-        if index_var.type_.name != 'int':
+        if index_var.var_type.name != 'int':
             raise SemanticError(111)
 
-        if l_side_variable.type_.name != 'array':
+        if l_side_variable.var_type.name != 'array':
             raise SemanticError(110)
 
         code += f""" 
@@ -888,7 +888,7 @@ class CodeGenerator(Interpreter):
     			""".replace("\t\t\t", "")
 
         new_var = Variable(
-            var_type=l_side_variable.type_.arr_type
+            var_type=l_side_variable.var_type.arr_type
         )
         GlobalVariables.STACK.append(new_var)
 

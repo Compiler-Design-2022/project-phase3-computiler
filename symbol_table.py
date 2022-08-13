@@ -77,13 +77,13 @@ class SymbolTable:
         else:
             self.types[var_type.name] = var_type
 
-    def add_var(self, var: Variable):
+    def add_var(self, var: Variable, tree = None):
         if self.find_var(var.name, error=False, depth_one=True):
             raise SemanticError(33)
 
         self.variables[var.name] = var
 
-    def add_func(self, func: Function):
+    def add_func(self, func: Function, tree=None):
         if self.get_function(func.name, rise_error=False, depth=1):
             raise SemanticError(30)
 

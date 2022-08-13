@@ -75,7 +75,7 @@ class SymbolTableUpdater(Interpreter):
             name=func_name,
             return_type=type_,
             formals=formals,
-        ), tree)
+        ))
 
     def variable(self, tree):
 
@@ -96,7 +96,7 @@ class SymbolTableUpdater(Interpreter):
             address=IncDataPointer(4),
         )
 
-        tree.symbol_table.add_var(var, tree)
+        tree.symbol_table.add_var(var)
 
         # We need var later (e.g. in formals of funtions)
         stack.append(var)
