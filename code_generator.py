@@ -726,7 +726,12 @@ class CodeGenerator(Interpreter):
 
         access = class_obj.get_access(function)
 
-        can_access = bool(access == AccessModes.private and (not current_cls or (not class_obj.name == current_cls.name)))
+        can_not_access = bool(access == AccessModes.private and (not current_cls or (not class_obj.name == current_cls.name)) or\
+                          access == AccessModes.protected and (not current_cls or (not current_cls.can_upcast(class_obj))))
+
+        if can_not_access:
+            raise SemanticError()
+
 
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)

@@ -40,6 +40,13 @@ class Class:
         elif self.parent:
             return self.parent.get_access(name)
 
+    def can_upcast(self, class_obj):
+        if self.name == class_obj.name:
+            return True
+        if not self.parent:
+            return False
+        return self.parent.can_upcast(class_obj)
+
 
 class Type:
     def __init__(self, name, size=None, arr_type=None, class_obj=None):
