@@ -8,14 +8,17 @@ class Type:
         self.arr_type = arr_type
 
     def is_same(self, target):
+        if self.name != target.name and self.arr_type:
+            return self.arr_type.is_same(target)
         if self.name != target.name:
             return False
+
         if (self.arr_type and not target.arr_type) or (not self.arr_type and target.arr_type):
             return False
 
         if self.arr_type:
             return self.arr_type.is_same(target.arr_type)
-        return True 
+        return True
 
 
 class Variable:
