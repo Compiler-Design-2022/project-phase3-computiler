@@ -113,7 +113,6 @@ class MIPS:
             """
 
     assignment_int = """
-            # assignment
                 lw $t0, 0($sp)
 				addi $sp, $sp, 4
 				lw $t1, 4($sp) # load address from stack
@@ -237,7 +236,6 @@ class MIPS:
     					"""
 
     logical_sring_not_equal = """
-    					### not_equal string
     					lw $s1, 0($sp)
     					lw $s0, 4($sp)
 
@@ -362,7 +360,6 @@ class MIPS:
 				"""
 
     l_value_assign_true = """
-                # lval assign true
 				addi $t0, $gp, {}
 				sw $t0, -4($sp)
 
@@ -372,7 +369,6 @@ class MIPS:
 				"""
 
     l_value_assign_false = """
-                 # lval assign true
 
 				lw $t0, {}($gp)
 				addi $sp, $sp, -4
@@ -548,7 +544,6 @@ class MIPS:
     				"""
 
     class_init = """
-        		# class {} vtable init
 
         		li $v0, 9
         		li $a0, {}
@@ -812,8 +807,8 @@ class MIPSArray:
 		move $a0, $t1
 		syscall
 
-		move $a0, $v0
-		sw $t1, 0($sp)
+		move $s0, $v0
+		sw $t0, 0($s0)
 		addi $sp, $sp, -4
 		sw $s0, 0($sp)
 	"""
