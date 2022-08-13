@@ -823,10 +823,10 @@ class CodeGenerator(Interpreter):
                 output += MIPSPrintStmt.bool_stmt.format(stack_ptr_pos)
             elif var_type_name == DecafTypes.str_type:
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
+            elif var_type_name == DecafTypes.array_type:
+                output += MIPSPrintStmt.int_stmt.format(stack_ptr_pos)
             stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
             GlobalVariables.STACK.pop()
-
-        output += MIPSPrintStmt.new_line_stmt.format(stack_ptr_pos)
         return output
 
     def return_stmt(self, tree):
@@ -953,7 +953,7 @@ class CodeGenerator(Interpreter):
     def array_type(self, tree):
         array_type = self.visit(tree.children[0])
 
-        return Type(name=DecafTypes.double_type, arr_type=array_type)
+        return Type(name=DecafTypes.array_type, arr_type=array_type)
 
 
 def prepare_main_tree(tree):
