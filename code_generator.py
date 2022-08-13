@@ -249,7 +249,7 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def class_declaration(self, tree):
-        pass
+        class_name = tree.children[0]
 
     def assign(self, tree):
         GlobalVariables.ASSIGN_FLAG = True
