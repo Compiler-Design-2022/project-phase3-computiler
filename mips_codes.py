@@ -559,6 +559,11 @@ class MIPS:
 
         		"""
 
+    store_class_functions = """
+        				la $t0, {}
+        				sw $t0, {}($s0)
+        				"""
+
 
 class MIPSDouble:
     convert_double_to_int = """

@@ -285,6 +285,26 @@ class CodeGenerator(Interpreter):
             parent_classes.append(current_class)
             current_class = current_class.parent
 
+        all_functions = []
+        for current_class in parent_classes[::-1]:
+            for class_function in current_class.member_functions.values():
+                for func in all_functions:
+                    if func.name == class_function.name:
+                        for i in range(len(func.formals) - 1):
+                            if func.formals[i + 1].type_.name != class_function.formals[i + 1].type_.name:
+                                raise SemanticError()
+                            elif func.formals[i + 1].type_.arr_type.are_equal(func.formals[i + 1].type_.arr_type):
+                                raise SemanticError()
+                        if func.return_type.name != class_function.return_type.name:
+                            raise SemanticError()
+                all_functions.append(class_function)
+                func_label = class_function.label
+                _, index = current_class.get_func_and_index(class_function.name)
+
+                class_init_codes += MIPS.store_class_functions.format(func_label, index * 4).replace("\t\t", "")
+
+
+
         GlobalVariables.STACK_CLASS.pop()
 
         return code
