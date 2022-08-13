@@ -802,6 +802,7 @@ class MIPSArray:
 	"""
 
 	new_array = """
+	    {expression}
 		lw $t0, 0($sp)
 		addi $sp, $sp, 4
 		addi $t1, $t0, 1

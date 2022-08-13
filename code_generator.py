@@ -273,7 +273,6 @@ class CodeGenerator(Interpreter):
         for subtree in functions_trees:
             code += self.visit(subtree)
 
-
         vtable_size = class_.get_vtable_size()
 
         class_init_codes = ''
@@ -820,11 +819,13 @@ class CodeGenerator(Interpreter):
         return main_code
 
     def new_array(self, tree):
-        output_code = self.visit(tree.children[0])
+        expression = self.visit(tree.children[0])
         GlobalVariables.STACK.pop()
         arr_type = self.visit(tree.children[1])
         var_type = Type(DecafTypes.array_type, arr_type=arr_type)
-        output_code += MIPSArray.new_array
+        output_code = MIPSArray.new_array.format(
+            expression=expression
+        )
         GlobalVariables.STACK.append(
             Variable(
                 var_type=var_type
