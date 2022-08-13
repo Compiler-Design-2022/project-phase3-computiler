@@ -547,6 +547,18 @@ class MIPS:
 
     				"""
 
+    class_init = """
+        		# class {} vtable init
+
+        		li $v0, 9
+        		li $a0, {}
+        		syscall
+
+        		sw $v0, {}($gp)
+        		move $s0, $v0		# s0: address of vtable 
+
+        		"""
+
 
 class MIPSDouble:
     convert_double_to_int = """
