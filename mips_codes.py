@@ -812,8 +812,8 @@ class MIPSArray:
 		move $a0, $t1
 		syscall
 
-		move $a0, $v0
-		sw $t1, 0($sp)
+		move $s0, $v0
+		sw $t0, 0($s0)
 		addi $sp, $sp, -4
 		sw $s0, 0($sp)
 	"""
