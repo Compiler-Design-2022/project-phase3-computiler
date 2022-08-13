@@ -767,6 +767,10 @@ class CodeGenerator(Interpreter):
             addi $sp, $sp, -4
             """
 
+        GlobalVariables.STACK.append(Variable(var_type=function.return_type))
+
+        return output_code
+
 
 
 
