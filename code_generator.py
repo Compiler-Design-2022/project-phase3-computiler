@@ -250,71 +250,72 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
-    def class_declaration(self, tree):
-        class_name = tree.children[1].value
+    # TODO: needs debug
+    # def class_declaration(self, tree):
+    #     class_name = tree.children[1].value
 
-        class_ = tree.symbol_table.get_type(class_name).class_ref
+    #     class_ = tree.symbol_table.get_type(class_name).class_ref
 
-        GlobalVariables.STACK_CLASS.append(class_)
+    #     GlobalVariables.STACK_CLASS.append(class_)
 
-        code = ''
+    #     code = ''
 
-        functions_trees = []
-        variables_trees = []
+    #     functions_trees = []
+    #     variables_trees = []
 
-        for subtree in tree.children:
-            if isinstance(subtree, Tree) and subtree.data == Constants.field:
-                if subtree.children[1].data == Constants.function_decl:
-                    functions_trees.append(subtree)
-                else:
-                    variables_trees.append(subtree)
+    #     for subtree in tree.children:
+    #         if isinstance(subtree, Tree) and subtree.data == Constants.field:
+    #             if subtree.children[1].data == Constants.function_decl:
+    #                 functions_trees.append(subtree)
+    #             else:
+    #                 variables_trees.append(subtree)
 
-        for subtree in variables_trees:
-            code += self.visit(subtree)
+    #     for subtree in variables_trees:
+    #         code += self.visit(subtree)
 
-        for subtree in functions_trees:
-            code += self.visit(subtree)
+    #     for subtree in functions_trees:
+    #         code += self.visit(subtree)
 
-        vtable_size = class_.get_vtable_size()
+    #     vtable_size = class_.get_vtable_size()
 
-        class_init_codes = ''
-        class_init_codes += MIPS.class_init.format(class_.name, vtable_size * 4, class_.address).replace("\t\t", "\t")
+    #     class_init_codes = ''
+    #     class_init_codes += MIPS.class_init.format(class_.name, vtable_size * 4, class_.address).replace("\t\t", "\t")
 
-        current_class = class_
-        parent_classes = []
-        while current_class:
-            parent_classes.append(current_class)
-            current_class = current_class.parent
+    #     current_class = class_
+    #     parent_classes = []
+    #     while current_class:
+    #         parent_classes.append(current_class)
+    #         current_class = current_class.parent
 
-        all_functions = []
-        for current_class in parent_classes[::-1]:
-            for class_function in current_class.member_functions.values():
-                for func in all_functions:
-                    if func.name == class_function.name:
-                        for i in range(len(func.formals) - 1):
-                            if func.formals[i + 1].type_.name != class_function.formals[i + 1].type_.name:
-                                raise SemanticError()
-                            elif func.formals[i + 1].type_.arr_type.are_equal(func.formals[i + 1].type_.arr_type):
-                                raise SemanticError()
-                        if func.return_type.name != class_function.return_type.name:
-                            raise SemanticError()
-                all_functions.append(class_function)
-                func_label = class_function.label
-                _, index = current_class.get_func_and_index(class_function.name)
+    #     all_functions = []
+    #     for current_class in parent_classes[::-1]:
+    #         for class_function in current_class.member_functions.values():
+    #             for func in all_functions:
+    #                 if func.name == class_function.name:
+    #                     for i in range(len(func.formals) - 1):
+    #                         if func.formals[i + 1].type_.name != class_function.formals[i + 1].type_.name:
+    #                             raise SemanticError()
+    #                         elif func.formals[i + 1].type_.arr_type.are_equal(func.formals[i + 1].type_.arr_type):
+    #                             raise SemanticError()
+    #                     if func.return_type.name != class_function.return_type.name:
+    #                         raise SemanticError()
+    #             all_functions.append(class_function)
+    #             func_label = class_function.label
+    #             _, index = current_class.get_func_and_index(class_function.name)
 
-                class_init_codes += MIPS.store_class_functions.format(func_label, index * 4)
+    #             class_init_codes += MIPS.store_class_functions.format(func_label, index * 4)
 
-        all_values = []
-        for current_class in parent_classes[::-1]:
-            for value in current_class.member_data.values():
-                for val in all_values:
-                    if val.name == value.name:
-                        raise SemanticError()
-                all_values.append(value)
+    #     all_values = []
+    #     for current_class in parent_classes[::-1]:
+    #         for value in current_class.member_data.values():
+    #             for val in all_values:
+    #                 if val.name == value.name:
+    #                     raise SemanticError()
+    #             all_values.append(value)
 
-        GlobalVariables.STACK_CLASS.pop()
+    #     GlobalVariables.STACK_CLASS.pop()
 
-        return code
+    #     return code
 
     def assign(self, tree):
         GlobalVariables.ASSIGN_FLAG = True
@@ -457,7 +458,6 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
-    # class not implemented
     def l_value_ident(self, tree):
         var = tree.symbol_table.find_var(tree.children[0].value, tree=tree, error=True)
         GlobalVariables.STACK.append(var)
@@ -697,76 +697,77 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=function.return_type))
         return output_code
 
-    def method_call(self, tree):
-        expr_code_0 = self.visit(tree.children[0])
-        variable = GlobalVariables.STACK.pop()
+    # TODO: needs debug
+    # def method_call(self, tree):
+    #     expr_code_0 = self.visit(tree.children[0])
+    #     variable = GlobalVariables.STACK.pop()
 
-        class_obj = variable.var_type.class_obj
-        function = tree.symbol_table.get_function(
-            tree.children[1].value
-        )
+    #     class_obj = variable.var_type.class_obj
+    #     function = tree.symbol_table.get_function(
+    #         tree.children[1].value
+    #     )
 
-        if not class_obj:
-            if variable.var_type.name == DecafTypes.array_type:
-                if function == "length":
-                    output_code = self.visit(tree.children[0])
-                    GlobalVariables.STACK.pop()
-                    output_code += MIPSClass.l_var
+    #     if not class_obj:
+    #         if variable.var_type.name == DecafTypes.array_type:
+    #             if function == "length":
+    #                 output_code = self.visit(tree.children[0])
+    #                 GlobalVariables.STACK.pop()
+    #                 output_code += MIPSClass.l_var
 
-                    GlobalVariables.STACK.append(Variable(var_type=function.return_type))
-                    return output_code
-                else:
-                    raise SemanticError()
+    #                 GlobalVariables.STACK.append(Variable(var_type=function.return_type))
+    #                 return output_code
+    #             else:
+    #                 raise SemanticError()
 
-            raise SemanticError()
+    #         raise SemanticError()
 
-        function, index = class_obj.get_function(function)
+    #     function, index = class_obj.get_function(function)
 
-        current_cls = None
-        if len(GlobalVariables.STACK_CLASS):
-            current_cls = GlobalVariables.STACK_CLASS[-1]
+    #     current_cls = None
+    #     if len(GlobalVariables.STACK_CLASS):
+    #         current_cls = GlobalVariables.STACK_CLASS[-1]
 
-        access = class_obj.get_access(function)
+    #     access = class_obj.get_access(function)
 
-        can_not_access = bool(access == AccessModes.private and (not current_cls or (not class_obj.name == current_cls.name)) or\
-                          access == AccessModes.protected and (not current_cls or (not current_cls.can_upcast(class_obj))))
+    #     can_not_access = bool(access == AccessModes.private and (not current_cls or (not class_obj.name == current_cls.name)) or\
+    #                       access == AccessModes.protected and (not current_cls or (not current_cls.can_upcast(class_obj))))
 
-        if can_not_access:
-            raise SemanticError()
+    #     if can_not_access:
+    #         raise SemanticError()
 
-        pre_stack_len = len(GlobalVariables.STACK)
+    #     pre_stack_len = len(GlobalVariables.STACK)
 
-        output_code = MIPSClass.method_call.format(expr_code_0)
+    #     output_code = MIPSClass.method_call.format(expr_code_0)
 
-        GlobalVariables.STACK.append(variable)
+    #     GlobalVariables.STACK.append(variable)
 
-        output_code += self.visit(tree.children[2])
+    #     output_code += self.visit(tree.children[2])
 
-        arg_num = len(GlobalVariables.STACK) - pre_stack_len
+    #     arg_num = len(GlobalVariables.STACK) - pre_stack_len
 
-        if arg_num != len(function.formals):
-            raise SemanticError()
+    #     if arg_num != len(function.formals):
+    #         raise SemanticError()
 
-        validation_arg_num = arg_num - 1
-        while len(GlobalVariables.STACK) > pre_stack_len:
-            formal = function.formals[validation_arg_num]
-            arg = GlobalVariables.STACK.pop()
-            if not arg.var_type.same_or_can_upcast(formal.type_):
-                raise SemanticError()
-            validation_arg_num -= 1
+    #     validation_arg_num = arg_num - 1
+    #     while len(GlobalVariables.STACK) > pre_stack_len:
+    #         formal = function.formals[validation_arg_num]
+    #         arg = GlobalVariables.STACK.pop()
+    #         if not arg.var_type.same_or_can_upcast(formal.type_):
+    #             raise SemanticError()
+    #         validation_arg_num -= 1
 
-        output_code += MIPSClass.load_func.format(
-            4 * (arg_num - 1),
-            4 * index,
-            4 * arg_num
-        )
+    #     output_code += MIPSClass.load_func.format(
+    #         4 * (arg_num - 1),
+    #         4 * index,
+    #         4 * arg_num
+    #     )
 
-        if function.return_type:
-            output_code += MIPSClass.return_type
+    #     if function.return_type:
+    #         output_code += MIPSClass.return_type
 
-        GlobalVariables.STACK.append(Variable(var_type=function.return_type))
+    #     GlobalVariables.STACK.append(Variable(var_type=function.return_type))
 
-        return output_code
+    #     return output_code
 
 
 

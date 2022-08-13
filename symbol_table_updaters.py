@@ -148,39 +148,39 @@ class SymbolTableUpdater(Interpreter):
             if isinstance(child, Tree):
                 child.symbol_table = new_block_table
                 self.visit(child)
+    #TODO: need debug
+    # def class_declaration(self, tree):
+    #     class_name = tree.children[1].value
 
-    def class_declaration(self, tree):
-        class_name = tree.children[1].value
+    #     parent_name = None
 
-        parent_name = None
+    #     if len(tree.children) > 2 and isinstance(tree.children[2], Token) and tree.children[2].value == Constants.extends:
+    #         parent_name = tree.children[3].value
 
-        if len(tree.children) > 2 and isinstance(tree.children[2], Token) and tree.children[2].value == Constants.extends:
-            parent_name = tree.children[3].value
+    #     class_ = Class(name=class_name, address=IncDataPointer(4), parent=parent_name)
 
-        class_ = Class(name=class_name, address=increment_data_pointer(4), parent=parent_name)
+    #     type_ = Type(name=class_name, class_obj=class_, size=4)
 
-        type_ = Type(name=class_name, class_obj=class_, size=4)
+    #     tree.symbol_table.add_type(type_)
 
-        tree.symbol_table.add_type(type_)
+    #     class_symbol_table = SymbolTable(parent=tree.symbol_table)
 
-        class_symbol_table = SymbolTable(parent=tree.symbol_table)
+    #     class_stack.append(class_)
 
-        class_stack.append(class_)
+    #     for subtree in tree.children:
+    #         if isinstance(subtree, Tree) and subtree.data == 'field':
+    #             subtree.symbol_table = class_symbol_table
+    #             initial_stack_len = len(stack)
+    #             self.visit(subtree)
+    #             while initial_stack_len < len(stack):
+    #                 stack.pop()
 
-        for subtree in tree.children:
-            if isinstance(subtree, Tree) and subtree.data == 'field':
-                subtree.symbol_table = class_symbol_table
-                initial_stack_len = len(stack)
-                self.visit(subtree)
-                while initial_stack_len < len(stack):
-                    stack.pop()
+    #     class_stack.pop()
 
-        class_stack.pop()
-
-        class_.set_fields(
-            member_data=class_symbol_table.variables,
-            member_functions=class_symbol_table.functions
-        )
+    #     class_.set_fields(
+    #         member_data=class_symbol_table.variables,
+    #         member_functions=class_symbol_table.functions
+    #     )
 
 
 class SymbolTableParentUpdater(Visitor):
@@ -213,16 +213,17 @@ class TypeVisitor(Interpreter):
 
         return type_
 
-    def class_declaration(self, tree):
-        class_obj = tree.symbol_table.get_type(tree.children[1].value).class_obj
-        if class_obj.parent:
-            parent_class = tree.symbol_table.get_type(class_obj.parent).class_obj
-            if not parent_class:
-                raise SemanticError(37)
-            class_obj.parent = parent_class
-        for child in tree.children:
-            if isinstance(child, Tree):
-                self.visit(child)
+    #TODO: needs debug
+    # def class_declaration(self, tree):
+    #     class_obj = tree.symbol_table.get_type(tree.children[1].value).class_obj
+    #     if class_obj.parent:
+    #         parent_class = tree.symbol_table.get_type(class_obj.parent).class_obj
+    #         if not parent_class:
+    #             raise SemanticError(37)
+    #         class_obj.parent = parent_class
+    #     for child in tree.children:
+    #         if isinstance(child, Tree):
+    #             self.visit(child)
 
     def function_decl(self, tree):
         return_type = Type(DecafTypes.void_type)
