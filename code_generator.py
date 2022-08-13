@@ -241,7 +241,9 @@ class CodeGenerator(Interpreter):
 
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
-        if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
+        exclusive_var1 = var1 if var1.var_type.arr_type else var2
+        exclusive_var2 = var2 if var1.var_type.arr_type else var1
+        if not exclusive_var1.var_type.is_same(exclusive_var2.var_type):
             raise SemanticError(23)
         output_code += MIPS.module_int
         var_type = tree.symbol_table.get_type('int')
