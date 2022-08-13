@@ -2,14 +2,21 @@ from semantic_error import SemanticError
 
 
 class Class:
-    def __init__(self, name, parent=None, interfaces=None):
+    def __init__(self, name, parent=None, interfaces=None, address=None):
         self.parent = parent
         self.interfaces = interfaces
         self.name = name
+        self.address = address
+        self.member_data = None
+        self.member_functions = None
+
+    def set_fields(self, member_data, member_functions):
+        self.member_data = member_data
+        self.member_functions = member_functions
 
 
 class Type:
-    def __init__(self, name, size=None, arr_type=None, class_obj=None):
+    def __init__(self, name, size=None, arr_type=None, class_obj=None, class_ref=None):
         self.name = name
         self.size = size
         self.arr_type = arr_type
