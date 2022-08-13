@@ -503,13 +503,13 @@ class MIPS:
             	li $a0, {}
             	syscall
 
-            	move $s0, $v0		# s0: address of object 
+            	move $s0, $v0	
 
-            	lw $t0, {}($gp) 	# t0: address of vtable
+            	lw $t0, {}($gp) 
             	sw $t0, 0($s0)
 
             	addi $sp, $sp, -4
-            	sw $s0, 0($sp)		# store object variable in stack
+            	sw $s0, 0($sp)		
 
             	"""
 
@@ -521,22 +521,22 @@ class MIPS:
     array_init = """
     				{}
 
-    				lw $t1, 0($sp)	# array size
+    				lw $t1, 0($sp)	
     				addi $sp, $sp, 4
 
     				ble $t1, $zero, runtimeError
 
-    				add $t0, $t1, 1  # add one more place for size
+    				add $t0, $t1, 1 
 
-    				mul $t0, $t0, 4	# array size in bytes
+    				mul $t0, $t0, 4	
 
     				li $v0 , 9
     				move $a0 , $t0
     				syscall
 
-    				move $s0, $v0		# s0: address of array
+    				move $s0, $v0		
 
-    				sw $t1, 0($s0)	# store size in first word
+    				sw $t1, 0($s0)	
 
     				addi $sp, $sp, -4
     				sw $s0, 0($sp)
@@ -550,7 +550,7 @@ class MIPS:
         		syscall
 
         		sw $v0, {}($gp)
-        		move $s0, $v0		# s0: address of vtable 
+        		move $s0, $v0		
 
         		"""
 
