@@ -23,82 +23,58 @@ class SymbolTableUpdater(Interpreter):
         self.visit_children(tree)
 
     data_pointer = 0
-    """
-    Each Node set it's children SymbolTables. 
-    If defining a method make sure to set all children symbol tables
-    and visit children. default gives every child (non token) parent
-    symbol table
-    """
-
     def type(self, tree):
-        type_ = tree.children[0].value
-        stack.append(Type(type_))
+        type_name = tree.children[0].value
+        stack.append(Type(type_name))
 
     def function_decl(self, tree):
         function_class = None
         if len(class_stack) > 0:
             function_class = class_stack[-1]
-        type_ = Type(DecafTypes.void_type)
+        return_type = Type(DecafTypes.void_type)
         if isinstance(tree.children[0], Tree):
             tree.children[0].symbol_table = tree.symbol_table
             self.visit(tree.children[0])
-            type_ = stack.pop()
+            return_type = stack.pop()
         func_name = tree.children[1].value
         formals_symbol_table = SymbolTable(parent=tree.symbol_table)
         tree.children[2].symbol_table = formals_symbol_table
-        # TODO
-        # not sure what to do here and what types do formals need to be
-        # now they are list of types:Type (but without size)
         sp_initial = len(stack)
         self.visit(tree.children[2])
         formals = []
-
         while len(stack) > sp_initial:
             f = stack.pop()
             formals.append(f)
 
         formals = formals[::-1]
-
-        # Add this to formals and symbol table
-
-        # set body scope
         body_symbol_table = SymbolTable(parent=formals_symbol_table)
         tree.children[3].symbol_table = body_symbol_table
         self.visit(tree.children[3])
-
-        # change function label in mips code to not get confused with other functions with same name
         prefix_label = ''
         if function_class:
-            prefix_label = "class_" + function_class.name + "_"
+            prefix_label = "class_"
 
         tree.symbol_table.add_func(Function(
             name=func_name,
-            return_type=type_,
+            return_type=return_type,
             formals=formals,
+            prefix_class=prefix_label
         ))
 
     def variable(self, tree):
-
-        # check if variable is a member data
         variable_class = None
         if len(class_stack) > 0:
             variable_class = class_stack[-1]
-
         tree.children[0].symbol_table = tree.symbol_table
         self.visit(tree.children[0])
-        type_ = stack.pop()
-
+        var_type = stack.pop()
         var_name = tree.children[1].value
-
         var = Variable(
             name=var_name,
-            var_type=type_,
+            var_type=var_type,
             address=IncDataPointer(4),
         )
-
         tree.symbol_table.add_var(var)
-
-        # We need var later (e.g. in formals of funtions)
         stack.append(var)
 
     def array_type(self, tree):
@@ -238,29 +214,23 @@ class TypeVisitor(Interpreter):
         return type_
 
     def class_declaration(self, tree):
-        class_name = tree.children[1].value
-        class_ = tree.symbol_table.get_type(class_name).class_obj
-        if class_.parent:
-            parent_class = tree.symbol_table.get_type(class_.parent).class_obj
+        class_obj = tree.symbol_table.get_type(tree.children[1].value).class_obj
+        if class_obj.parent:
+            parent_class = tree.symbol_table.get_type(class_obj.parent).class_obj
             if not parent_class:
                 raise SemanticError(37)
-            class_.parent = parent_class
+            class_obj.parent = parent_class
         for child in tree.children:
             if isinstance(child, Tree):
                 self.visit(child)
 
     def function_decl(self, tree):
-        # type
-        type_ = Type("void")
+        return_type = Type(DecafTypes.void_type)
         if isinstance(tree.children[0], Tree):
-            type_ = self.visit(tree.children[0])
-
-        # name
+            return_type = self.visit(tree.children[0])
         func_name = tree.children[1].value
         function = tree.symbol_table.get_function(func_name, tree=tree)
-
-        function.return_type = type_
-
+        function.return_type = return_type
         for child in tree.children:
             if isinstance(child, Tree):
                 self.visit(child)

@@ -76,7 +76,6 @@ do
         if [[ "${subtasks[$i]}" == "$folder" ]]; then
             subtask_score=$(( ${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
             echo $subtask_score;
-            (( score+= ${scores[$i]} * $NUMBER_OF_PASSED/($NUMBER_OF_PASSED + $NUMBER_OF_FAILED) ));
         fi
     done
 

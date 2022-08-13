@@ -90,8 +90,8 @@ class Variable:
 
 
 class Function:
-    def __init__(self, name, formals, return_type, address=0, size=0):
-        self.name = name
+    def __init__(self, name, formals, return_type, address=0, size=0, prefix_class=''):
+        self.name = prefix_class + name
         self.formals = formals
         self.return_type = return_type
         self.address = address
