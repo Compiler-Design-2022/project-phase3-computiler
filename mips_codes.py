@@ -773,3 +773,19 @@ class MIPSArray:
 		sw $t0, -4($sp)
 		addi $sp, $sp, -4
 	"""
+
+	new_array = """
+		lw $t0, 0($sp)
+		addi $sp, $sp, 4
+		addi $t1, $t0, 1
+		mul $t1, $t1, 4
+
+		li $v0, 9
+		move $a0, $t1
+		syscall
+
+		move $a0, $v0
+		sw $t1, 0($sp)
+		addi $sp, $sp, -4
+		sw $s0, 0($sp)
+	"""
