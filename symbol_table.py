@@ -72,6 +72,15 @@ class Type:
             return self.arr_type.is_same(target.arr_type)
         return True
 
+    def same_or_can_upcast(self, type_name):
+        if self.arr_type:
+            return self.is_same(type_name)
+
+        if self.class_obj and self.class_obj.can_upcast(type_name.class_obj):
+            return True
+
+        return self.name == type_name.name
+
 
 class Variable:
     def __init__(self, var_type: Type, address=None, name=None):

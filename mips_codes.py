@@ -828,3 +828,23 @@ class MIPSClass:
             addi $sp, $sp , -4
             sw $t3, 0($sp)
     		"""
+
+    method_call = """
+			{}
+		"""
+
+    load_func = """
+			lw $t0, {}($sp)
+			
+			beq $t0, $zero, runtimeError
+
+			lw $t1, 0($t0)
+
+			addi $t2, $t1, {}	
+
+			lw $t3, 0($t2)	
+
+			jalr $t3
+		
+			addi $sp, $sp, {}
+		"""

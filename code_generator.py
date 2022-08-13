@@ -720,6 +720,8 @@ class CodeGenerator(Interpreter):
 
             raise SemanticError()
 
+        function, index = class_obj.get_function(function)
+
         current_cls = None
         if len(GlobalVariables.STACK_CLASS):
             current_cls = GlobalVariables.STACK_CLASS[-1]
@@ -731,6 +733,41 @@ class CodeGenerator(Interpreter):
 
         if can_not_access:
             raise SemanticError()
+
+        pre_stack_len = len(GlobalVariables.STACK)
+
+        output_code = MIPSClass.method_call.format(expr_code_0)
+
+        GlobalVariables.STACK.append(variable)
+
+        output_code += self.visit(tree.children[2])
+
+        arg_num = len(GlobalVariables.STACK) - pre_stack_len
+
+        if arg_num != len(function.formals):
+            raise SemanticError()
+
+        validation_arg_num = arg_num - 1
+        while len(GlobalVariables.STACK) > pre_stack_len:
+            formal = function.formals[validation_arg_num]
+            arg = GlobalVariables.STACK.pop()
+            if not arg.var_type.same_or_can_upcast(formal.type_):
+                raise SemanticError()
+            validation_arg_num -= 1
+
+        output_code += MIPSClass.load_func.format(
+            4 * (arg_num - 1),
+            4 * index,
+            4 * arg_num
+        )
+
+        if function.return_type:
+            output_code += f"""
+            sw $v0, -4($sp)
+            addi $sp, $sp, -4
+            """
+
+
 
 
     def type(self, tree):
