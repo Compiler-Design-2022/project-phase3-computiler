@@ -840,7 +840,7 @@ class CodeGenerator(Interpreter):
         var = GlobalVariables.STACK.pop()
         output_code += self.visit(tree.children[1])
         index = GlobalVariables.STACK.pop()
-        if index.var_type.name != DecafTypes.int_type:
+        if not index.var_type.is_same(tree.symbol_table.get_type(DecafTypes.int_type)):
             raise SemanticError(104)
         if var.var_type.name != DecafTypes.array_type:
             raise SemanticError(105)
