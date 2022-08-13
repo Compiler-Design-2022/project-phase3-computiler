@@ -183,7 +183,7 @@ class SymbolTableUpdater(Interpreter):
 
         class_ = Class(name=class_name, address=IncDataPointer(4), parent=parent_name)
 
-        type_ = Type(name=class_name, class_ref=class_, size=4)
+        type_ = Type(name=class_name, class_obj=class_, size=4)
 
         tree.symbol_table.add_type(type_)
 
@@ -239,9 +239,9 @@ class TypeVisitor(Interpreter):
 
     def class_declaration(self, tree):
         class_name = tree.children[1].value
-        class_ = tree.symbol_table.get_type(class_name).class_ref
+        class_ = tree.symbol_table.get_type(class_name).class_obj
         if class_.parent:
-            parent_class = tree.symbol_table.get_type(class_.parent).class_ref
+            parent_class = tree.symbol_table.get_type(class_.parent).class_obj
             if not parent_class:
                 raise SemanticError(37)
             class_.parent = parent_class
