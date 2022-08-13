@@ -1,6 +1,13 @@
 from semantic_error import SemanticError
 
 
+class Class:
+    def __init__(self, name, parent=None, interfaces=None):
+        self.parent = parent
+        self.interfaces = interfaces
+        self.name = name
+
+
 class Type:
     def __init__(self, name, size=None, arr_type=None, class_obj=None):
         self.name = name
