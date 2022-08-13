@@ -275,6 +275,10 @@ class CodeGenerator(Interpreter):
         var1 = GlobalVariables.STACK.pop()
         expr2_code = self.visit(var2_expr)
         var2 = GlobalVariables.STACK.pop()
+        if isinstance(expr1_code, list):
+            expr1_code = expr1_code[0]
+        if isinstance(expr2_code, list):
+            expr2_code = expr2_code[0]
         output_code = expr1_code
         output_code += expr2_code
         return var1, var2, expr1_code, expr2_code, output_code
@@ -470,7 +474,8 @@ class CodeGenerator(Interpreter):
     def logical_not_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
-        unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
+        unknown_equal = bool(
+            (not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
                              (var1.var_type.name == var2.var_type.name or \
                               (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
                                                                                            'string',
