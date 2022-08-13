@@ -173,7 +173,7 @@ class SymbolTableUpdater(Interpreter):
                 child.symbol_table = new_block_table
                 self.visit(child)
 
-    def class_decl(self, tree):
+    def class_declaration(self, tree):
         class_name = tree.children[1].value
 
         parent_name = None
