@@ -14,6 +14,24 @@ class Class:
         self.member_data = member_data
         self.member_functions = member_functions
 
+    def get_function_index(self):
+        if not self.parent:
+            return 0
+        return self.parent.get_function_index() + len(self.parent.member_functions)
+
+    def get_function(self, name, raise_error=True):
+        if self.parent:
+            function, index = self.parent.get_function(name, raise_error=False)
+            if function is not None:
+                return function, index
+
+        if name in self.member_functions:
+            return self.member_functions[name], self.get_function_index() + list(self.member_functions.keys()).index(name)
+
+        if raise_error:
+            raise SemanticError()
+        return None, None
+
 
 class Type:
     def __init__(self, name, size=None, arr_type=None, class_obj=None):
