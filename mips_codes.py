@@ -609,13 +609,13 @@ class MIPSStr:
 
         move $a0, $s0
         move $s2, $ra
-        jal str_len
+        jal string_length
         move $ra, $s2
         move $t0, $v0
 
         move $a0, $s1
         move $s2, $ra
-        jal str_len
+        jal string_length
         move $ra, $s2
         add $t0, $t0, $v0
         addi $t0, $t0, 1

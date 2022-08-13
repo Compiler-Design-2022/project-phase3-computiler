@@ -823,10 +823,10 @@ class CodeGenerator(Interpreter):
                 output += MIPSPrintStmt.bool_stmt.format(stack_ptr_pos)
             elif var_type_name == DecafTypes.str_type:
                 output += MIPSPrintStmt.string_stmt.format(stack_ptr_pos)
-            elif var_type_name == DecafTypes.array_type:
-                output += MIPSPrintStmt.int_stmt.format(stack_ptr_pos)
             stack_ptr_pos = CodeGenerator.decrease_stack_ptr_pos(stack_ptr_pos)
             GlobalVariables.STACK.pop()
+
+        output += MIPSPrintStmt.new_line_stmt.format(stack_ptr_pos)
         return output
 
     def return_stmt(self, tree):

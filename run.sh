@@ -51,6 +51,7 @@ do
             fi
             if [[ $? = 0 ]]; then
                 ((NUMBER_OF_PASSED++))
+                ((score++))
                 echo "++++ test passed"
             else
                 ((NUMBER_OF_FAILED++))
