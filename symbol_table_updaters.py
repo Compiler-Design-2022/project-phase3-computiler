@@ -9,7 +9,7 @@ stack = []
 class_stack = []
 
 
-def IncDataPointer(size):
+def increment_data_pointer(size):
     cur = SymbolTableUpdater.data_pointer
     SymbolTableUpdater.data_pointer += size
     return cur
@@ -72,7 +72,7 @@ class SymbolTableUpdater(Interpreter):
         var = Variable(
             name=var_name,
             var_type=var_type,
-            address=IncDataPointer(4),
+            address=increment_data_pointer(4),
         )
         tree.symbol_table.add_var(var)
         stack.append(var)
