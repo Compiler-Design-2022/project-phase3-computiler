@@ -772,23 +772,33 @@ class MIPSSpecials:
 
 class MIPSArray:
 	array_assign = """
-		sw $t1, -4($sp)
+		sw $t2, -4($sp)
 		addi $sp, $sp, -4
 	"""
 
 	new_array_var = """
-		lw $t0, 0($sp)
-		addi $sp, $sp, 4
-		lw $t1, 0($sp)
-		addi $sp, $sp, 4
-		lw $t2, 0($t1)
-		addi $t0, $t0, 1
-		mul $t0, $t0, 4
-		add $t1, $t1, $t0
-		{assign_code}
-		lw $t0, 0($t1)
-		sw $t0, -4($sp)
-		addi $sp, $sp, -4
+		        lw $t1, 0($sp) #index
+				addi $sp, $sp, 4
+				lw $t2, 0($sp) #array addr
+				addi $sp, $sp, 4
+				lw $t3, 0($t2) 	#array size
+
+				addi $t1, $t1, 1 # add one to index ('cause of size)
+
+				ble $t1, $zero, runtimeError
+				bgt $t1, $t3, runtimeError
+
+
+				mul $t1, $t1, 4 # index offset in bytes
+
+				add $t2, $t2, $t1	#t2: address khooneye arraye ke mikhaim
+
+				{assign_code}
+
+				lw $t0, 0($t2)		#t0: value khooneye arraye ke mikhaim
+				sw $t0, -4($sp)
+				addi $sp, $sp, -4
+
 	"""
 
 	new_array = """
