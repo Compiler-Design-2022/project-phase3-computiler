@@ -9,7 +9,7 @@ stack = []
 class_stack = []
 
 
-def IncDataPointer(size):
+def increment_data_pointer(size):
     cur = SymbolTableUpdater.data_pointer
     SymbolTableUpdater.data_pointer += size
     return cur
@@ -72,7 +72,7 @@ class SymbolTableUpdater(Interpreter):
         var = Variable(
             name=var_name,
             var_type=var_type,
-            address=IncDataPointer(4),
+            address=increment_data_pointer(4),
         )
         tree.symbol_table.add_var(var)
         stack.append(var)
@@ -157,7 +157,7 @@ class SymbolTableUpdater(Interpreter):
         if len(tree.children) > 2 and isinstance(tree.children[2], Token) and tree.children[2].value == Constants.extends:
             parent_name = tree.children[3].value
 
-        class_ = Class(name=class_name, address=IncDataPointer(4), parent=parent_name)
+        class_ = Class(name=class_name, address=increment_data_pointer(4), parent=parent_name)
 
         type_ = Type(name=class_name, class_obj=class_, size=4)
 
