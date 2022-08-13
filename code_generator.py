@@ -241,7 +241,9 @@ class CodeGenerator(Interpreter):
 
     def module(self, tree):
         var1, var2, expr1, expr2, output_code = self.prepare_calculations(tree)
-        if var1.var_type.name != DecafTypes.int_type or var2.var_type.name != DecafTypes.int_type:
+        exclusive_var1 = var1 if var1.var_type.arr_type else var2
+        exclusive_var2 = var2 if var1.var_type.arr_type else var1
+        if not exclusive_var1.var_type.is_same(exclusive_var2.var_type):
             raise SemanticError(23)
         output_code += MIPS.module_int
         var_type = tree.symbol_table.get_type('int')
@@ -838,7 +840,7 @@ class CodeGenerator(Interpreter):
         var = GlobalVariables.STACK.pop()
         output_code += self.visit(tree.children[1])
         index = GlobalVariables.STACK.pop()
-        if index.var_type.name != DecafTypes.int_type:
+        if not index.var_type.is_same(tree.symbol_table.get_type(DecafTypes.int_type)):
             raise SemanticError(104)
         if var.var_type.name != DecafTypes.array_type:
             raise SemanticError(105)
@@ -878,19 +880,6 @@ class CodeGenerator(Interpreter):
         array_type = self.visit(tree.children[0])
 
         return Type(name=DecafTypes.double_type, arr_type=array_type)
-
-    def initialize_array(self, tree):
-        main_code = self.visit(tree.children[0])
-        array_size = GlobalVariables.STACK.pop()
-
-        array_type = self.visit(tree.children[1])
-
-        CodeGenerator.VARIABLE_NAME_COUNT += 1
-
-        main_code += MIPS.array_init.format(main_code).replace("\t\t\t", "")
-
-        GlobalVariables.STACK.append(Variable(var_type=array_type))
-        return main_code
 
 
 def prepare_main_tree(tree):

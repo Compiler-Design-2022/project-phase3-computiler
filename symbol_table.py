@@ -16,7 +16,7 @@ class Class:
 
 
 class Type:
-    def __init__(self, name, size=None, arr_type=None, class_obj=None, class_ref=None):
+    def __init__(self, name, size=None, arr_type=None, class_obj=None):
         self.name = name
         self.size = size
         self.arr_type = arr_type
@@ -48,7 +48,7 @@ class Variable:
 
 
 class Function:
-    def __init__(self, name, formals, return_type, address=0, size=0, prefix=''):
+    def __init__(self, name, formals, return_type, address=0, size=0):
         self.name = name
         self.formals = formals
         self.return_type = return_type
@@ -77,7 +77,7 @@ class SymbolTable:
         else:
             self.types[var_type.name] = var_type
 
-    def add_var(self, var: Variable, tree=None):
+    def add_var(self, var: Variable, tree = None):
         if self.find_var(var.name, error=False, depth_one=True):
             raise SemanticError(33)
 
