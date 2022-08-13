@@ -215,6 +215,8 @@ class CodeGenerator(Interpreter):
 
     @staticmethod
     def are_types_invalid(var1: Variable, var2: Variable):
+        if var1.var_type.arr_type:
+            return not var1.var_type.is_same(var2.var_type)
         return var1.var_type.name != var2.var_type.name
 
     @classmethod
