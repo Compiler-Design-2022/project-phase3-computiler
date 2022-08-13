@@ -1,6 +1,7 @@
 from lark.visitors import Interpreter
 from lark import Tree, Visitor
 
+from decaf_enums import DecafTypes
 from semantic_error import SemanticError
 from symbol_table import SymbolTable, Variable, Type, Function
 
@@ -34,41 +35,17 @@ class SymbolTableUpdater(Interpreter):
         stack.append(Type(type_))
 
     def function_decl(self, tree):
-        # stack frame
-        #			-------------------
-        # 			| 	argument n    |			\
-        # 			| 		...		  |				=> caller
-        # 			| 	argument 1    |			/
-        #			-------------------
-        #  $fp -> 	| saved registers |			\
-        #  $fp - 4	| 		...		  |			 \
-        #			-------------------				=> callee
-        # 			| 	local vars	  |			 /
-        # 			| 		...		  |			/
-        #  $sp ->	| 		...		  |
-        #  $sp - 4	-------------------
-
-        # access arguments with $fp + 4, $fp + 8, ...
-
-        # check if function is a member function
         function_class = None
         if len(class_stack) > 0:
             function_class = class_stack[-1]
-
-        # type
-        type_ = Type("void")  # void
-
+        type_ = Type(DecafTypes.void_type)
         if isinstance(tree.children[0], Tree):
             tree.children[0].symbol_table = tree.symbol_table
             self.visit(tree.children[0])
             type_ = stack.pop()
-
         func_name = tree.children[1].value
-
-        # set formal scope and visit formals
         formals_symbol_table = SymbolTable(parent=tree.symbol_table)
         tree.children[2].symbol_table = formals_symbol_table
-
         # TODO
         # not sure what to do here and what types do formals need to be
         # now they are list of types:Type (but without size)
@@ -227,25 +204,19 @@ class TypeVisitor(Interpreter):
 
         return type_
 
-    def class_decl(self, tree):
-
+    def class_declaration(self, tree):
         class_name = tree.children[1].value
-
         class_ = tree.symbol_table.get_type(class_name).class_ref
-
         if class_.parent:
             parent_class = tree.symbol_table.get_type(class_.parent).class_ref
             if not parent_class:
                 raise SemanticError(37)
-
             class_.parent = parent_class
-
         for child in tree.children:
             if isinstance(child, Tree):
                 self.visit(child)
 
     def function_decl(self, tree):
-
         # type
         type_ = Type("void")
         if isinstance(tree.children[0], Tree):
