@@ -9,6 +9,7 @@ class Class:
         self.address = address
         self.member_data = None
         self.member_functions = None
+        self.accesses = {}
 
     def set_fields(self, member_data, member_functions):
         self.member_data = member_data
@@ -31,6 +32,13 @@ class Class:
         if raise_error:
             raise SemanticError()
         return None, None
+
+    def get_access(self, name):
+        if name in self.accesses:
+            return self.accesses[name]
+
+        elif self.parent:
+            return self.parent.get_access(name)
 
 
 class Type:

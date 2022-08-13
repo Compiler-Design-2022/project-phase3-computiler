@@ -720,6 +720,10 @@ class CodeGenerator(Interpreter):
 
             raise SemanticError()
 
+        current_cls = None
+        if len(GlobalVariables.STACK_CLASS):
+            current_cls = GlobalVariables.STACK_CLASS[-1]
+
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)
 
