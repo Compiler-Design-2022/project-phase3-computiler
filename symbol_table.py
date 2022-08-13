@@ -99,11 +99,14 @@ class Function:
 
 
 class SymbolTable:
+    symbol_tables = []
+
     def __init__(self, parent=None):
         self.types = dict()
         self.parent = parent
         self.functions = {}
         self.variables = {}
+        SymbolTable.symbol_tables.append(self)
 
     def get_type(self, var_type, rise_error=True, is_arr_type=False):
         if var_type in self.types.keys():
