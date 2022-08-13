@@ -274,6 +274,23 @@ class CodeGenerator(Interpreter):
             code += self.visit(subtree)
 
 
+        vtable_size = class_.get_vtable_size()
+
+        class_init_codes = ''
+        class_init_codes += f"""
+        		# class {class_.name} vtable init
+
+        		li $v0, 9
+        		li $a0, {vtable_size * 4}
+        		syscall
+
+        		sw $v0, {class_.address}($gp)
+        		move $s0, $v0		# s0: address of vtable 
+
+        		""".replace("\t\t", "\t")
+
+
+        GlobalVariables.STACK_CLASS.pop()
 
         return code
 
