@@ -166,8 +166,7 @@ class CodeGenerator(Interpreter):
 
     def if_stmt(self, tree):
         expression_code = self.visit(tree.children[1])
-        if tree.children[1].data == 'l_value_ident':
-            raise SemanticError(103)
+        GlobalVariables.STACK.pop()
         else_statement_code = ''
         statement_code = self.visit(tree.children[2])
         if len(tree.children) > 3:
@@ -471,6 +470,16 @@ class CodeGenerator(Interpreter):
     def logical_not_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
+        unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
+                             (var1.var_type.name == var2.var_type.name or \
+                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array']) or \
+                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
+                                                                                           'string',
+                                                                                           'array'])))
+
+        
         if var1.var_type.name == DecafTypes.double_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
@@ -486,17 +495,8 @@ class CodeGenerator(Interpreter):
                 str(CodeGenerator.VARIABLE_NAME_COUNT),
                 10
             )
-
-        unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
-                             (var1.var_type.name == var2.var_type.name or \
-                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
-                                                                                           'string',
-                                                                                           'array']) or \
-                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
-                                                                                           'string',
-                                                                                           'array'])))
-
-        if unknown_equal:
+        
+        elif unknown_equal:
             output_code += MIPS.logical_unknown_not_equal
 
         else:
