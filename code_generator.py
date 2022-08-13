@@ -6,7 +6,7 @@ from lark.visitors import Interpreter
 
 from decaf_enums import Constants, DecafTypes, LoopLabels
 from globals import GlobalVariables
-from mips_codes import MIPS, MIPSArray, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials
+from mips_codes import MIPS, MIPSArray, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials, MIPSClass
 from semantic_error import SemanticError
 from symbol_table import Variable, SymbolTable, Type
 from symbol_table_updaters import SymbolTableUpdater, SymbolTableParentUpdater, TypeVisitor
@@ -302,7 +302,7 @@ class CodeGenerator(Interpreter):
                 func_label = class_function.label
                 _, index = current_class.get_func_and_index(class_function.name)
 
-                class_init_codes += MIPS.store_class_functions.format(func_label, index * 4).replace("\t\t", "")
+                class_init_codes += MIPS.store_class_functions.format(func_label, index * 4)
 
         all_values = []
         for current_class in parent_classes[::-1]:
@@ -696,6 +696,29 @@ class CodeGenerator(Interpreter):
             output_code += MIPSSpecials.method_call_return
         GlobalVariables.STACK.append(Variable(var_type=function.return_type))
         return output_code
+
+    def method_call(self, tree):
+        expr_code_0 = self.visit(tree.children[0])
+        variable = GlobalVariables.STACK.pop()
+
+        class_obj = variable.var_type.class_obj
+        function = tree.symbol_table.get_function(
+            tree.children[1].value
+        )
+
+        if not class_obj:
+            if variable.var_type.name == DecafTypes.array_type:
+                if function == "length":
+                    output_code = self.visit(tree.children[0])
+                    GlobalVariables.STACK.pop()
+                    output_code += MIPSClass.l_var
+
+                    GlobalVariables.STACK.append(Variable(var_type=function.return_type))
+                    return output_code
+                else:
+                    raise SemanticError()
+
+            raise SemanticError()
 
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)

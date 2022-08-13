@@ -77,7 +77,7 @@ class SymbolTable:
         else:
             self.types[var_type.name] = var_type
 
-    def add_var(self, var: Variable, tree = None):
+    def add_var(self, var: Variable):
         if self.find_var(var.name, error=False, depth_one=True):
             raise SemanticError(33)
 

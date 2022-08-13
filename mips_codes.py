@@ -817,3 +817,14 @@ class MIPSArray:
 		addi $sp, $sp, -4
 		sw $s0, 0($sp)
 	"""
+
+
+class MIPSClass:
+    l_var = """
+            lw $t2, ($sp)
+            addi $sp, $sp, 4
+            lw $t3, 0($t2)
+
+            addi $sp, $sp , -4
+            sw $t3, 0($sp)
+    		"""
