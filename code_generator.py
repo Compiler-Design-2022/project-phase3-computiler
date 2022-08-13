@@ -836,63 +836,28 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def l_value_array(self, tree):
+        output_code = self.visit(tree.children[0])
+        var = GlobalVariables.STACK.pop()
+        output_code += self.visit(tree.children[1])
+        index = GlobalVariables.STACK.pop()
+        if not index.var_type.is_same(tree.symbol_table.get_type(DecafTypes.int_type)):
+            raise SemanticError(104)
+        if var.var_type.name != DecafTypes.array_type:
+            raise SemanticError(105)
 
-        store_addr_code = ''
+        assign_code = ''
         if GlobalVariables.ASSIGN_FLAG:
-            store_addr_code = """
-    		sw $t2, -4($sp)
-    		addi $sp, $sp, -4
-    		"""
-
+            assign_code = MIPSArray.array_assign
         GlobalVariables.ASSIGN_FLAG = False
-
-        code = ""
-        code += self.visit(tree.children[0])
-        l_side_variable = GlobalVariables.STACK.pop()
-
-        code += self.visit(tree.children[1])
-        index_var = GlobalVariables.STACK.pop()
-
-        if index_var.var_type.name != 'int':
-            raise SemanticError(111)
-
-        if l_side_variable.var_type.name != 'array':
-            raise SemanticError(110)
-
-        code += f""" 
-    			lw $t1, 0($sp) #index
-    			addi $sp, $sp, 4
-
-    			#lw $t2, {l_side_variable.address}($gp)
-    			lw $t2, 0($sp) #array addr
-    			addi $sp, $sp, 4
-    			lw $t3, 0($t2) 	#array size
-
-    			addi $t1, $t1, 1 # add one to index ('cause of size)
-
-    			ble $t1, $zero, runtimeError
-    			bgt $t1, $t3, runtimeError
-
-
-    			mul $t1, $t1, 4 # index offset in bytes
-
-    			add $t2, $t2, $t1	#t2: address khooneye arraye ke mikhaim
-
-    			{store_addr_code}
-
-    			lw $t0, 0($t2)		#t0: value khooneye arraye ke mikhaim
-    			sw $t0, -4($sp)
-    			addi $sp, $sp, -4
-
-
-    			""".replace("\t\t\t", "")
-
-        new_var = Variable(
-            var_type=l_side_variable.var_type.arr_type
+        GlobalVariables.STACK.append(
+            Variable(
+                var_type=var.var_type
+            )
         )
-        GlobalVariables.STACK.append(new_var)
-
-        return code
+        output_code += MIPSArray.new_array_var.format(
+            assign_code=assign_code
+        )
+        return output_code
 
     def double_to_int(self, tree):
         main_code = self.visit(tree.children[1])
@@ -915,19 +880,6 @@ class CodeGenerator(Interpreter):
         array_type = self.visit(tree.children[0])
 
         return Type(name=DecafTypes.double_type, arr_type=array_type)
-
-    def initialize_array(self, tree):
-        main_code = self.visit(tree.children[0])
-        array_size = GlobalVariables.STACK.pop()
-
-        array_type = self.visit(tree.children[1])
-
-        CodeGenerator.VARIABLE_NAME_COUNT += 1
-
-        main_code += MIPS.array_init.format(main_code).replace("\t\t\t", "")
-
-        GlobalVariables.STACK.append(Variable(var_type=array_type))
-        return main_code
 
 
 def prepare_main_tree(tree):
