@@ -4,7 +4,7 @@ from typing import List
 from lark import Lark, ParseError, Tree
 from lark.visitors import Interpreter
 
-from decaf_enums import Constants, DecafTypes, LoopLabels
+from decaf_enums import Constants, DecafTypes, LoopLabels, AccessModes
 from globals import GlobalVariables
 from mips_codes import MIPS, MIPSArray, MIPSDouble, MIPSStr, MIPSConditionalStmt, MIPSPrintStmt, MIPSSpecials, MIPSClass
 from semantic_error import SemanticError
@@ -723,6 +723,10 @@ class CodeGenerator(Interpreter):
         current_cls = None
         if len(GlobalVariables.STACK_CLASS):
             current_cls = GlobalVariables.STACK_CLASS[-1]
+
+        access = class_obj.get_access(function)
+
+        can_access = bool(access == AccessModes.private and (not current_cls or (not class_obj.name == current_cls.name)))
 
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)

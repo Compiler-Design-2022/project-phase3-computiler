@@ -23,3 +23,9 @@ class LoopLabels:
     while_end_label = "end_while_{version}"
     for_break_label = "for_end_{version}"
     for_continue_label = "for_continue_label_{version}"
+
+
+class AccessModes:
+    private = 'private'
+    protected = 'protected'
+    public = 'public'
