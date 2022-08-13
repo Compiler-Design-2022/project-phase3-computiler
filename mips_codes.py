@@ -172,13 +172,13 @@ class MIPS:
                     """
 
     logical_double_equal = """
-        		l.s $f2, 0($sp)
-        		l.s $f4, 4($sp)
+        		l.s $f0, 0($sp)
+        		l.s $f1, 4($sp)
         		li $t0 , 0
-        		c.eq.s $f4, $f2
-        		bc1f d_eq_{}
+        		c.eq.s $f0, $f1
+        		bc1f d_eq_{version}
         		li $t0 , 1
-        	d_eq_{}:
+        	d_eq_{version}:
         		sw $t0, 4($sp)
         		addi $sp, $sp, 4
         		"""

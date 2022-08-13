@@ -438,22 +438,6 @@ class CodeGenerator(Interpreter):
     def logical_equal(self, tree):
         var1, var2, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
 
-        if var1.var_type.name == DecafTypes.double_type:
-            CodeGenerator.change_var()
-            output_code += MIPS.set_multiple_var(
-                MIPS.logical_double_equal,
-                str(CodeGenerator.VARIABLE_NAME_COUNT),
-                2
-            )
-
-        elif var1.var_type.name == DecafTypes.str_type:
-            CodeGenerator.change_var()
-            output_code += MIPS.set_multiple_var(
-                MIPS.logical_string_equal,
-                str(CodeGenerator.VARIABLE_NAME_COUNT),
-                10
-            )
-
         unknown_equal = bool((not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
                              (var1.var_type.name == var2.var_type.name or \
                               (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
@@ -463,9 +447,21 @@ class CodeGenerator(Interpreter):
                                                                                            'string',
                                                                                            'array'])))
 
-        if unknown_equal:
-            output_code += MIPS.logical_unknown_equal
 
+        if var1.var_type.name == DecafTypes.double_type:
+            version = CodeGenerator.get_version()
+            output_code += MIPS.logical_double_equal.format(
+                version=version
+            )
+        elif var1.var_type.name == DecafTypes.str_type:
+            CodeGenerator.change_var()
+            output_code += MIPS.set_multiple_var(
+                MIPS.logical_string_equal,
+                str(CodeGenerator.VARIABLE_NAME_COUNT),
+                10
+            )
+        elif unknown_equal:
+            output_code += MIPS.logical_unknown_equal
         else:
             raise SemanticError(11)
 
