@@ -843,3 +843,8 @@ class MIPSClass:
 		
 			addi $sp, $sp, {}
 		"""
+
+    return_type = """
+            sw $v0, -4($sp)
+            addi $sp, $sp, -4
+            """

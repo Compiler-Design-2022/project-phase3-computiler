@@ -762,10 +762,7 @@ class CodeGenerator(Interpreter):
         )
 
         if function.return_type:
-            output_code += f"""
-            sw $v0, -4($sp)
-            addi $sp, $sp, -4
-            """
+            output_code += MIPSClass.return_type
 
         GlobalVariables.STACK.append(Variable(var_type=function.return_type))
 
