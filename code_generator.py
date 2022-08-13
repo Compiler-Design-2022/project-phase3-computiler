@@ -303,7 +303,13 @@ class CodeGenerator(Interpreter):
 
                 class_init_codes += MIPS.store_class_functions.format(func_label, index * 4).replace("\t\t", "")
 
-
+        all_values = []
+        for current_class in parent_classes[::-1]:
+            for value in current_class.member_data.values():
+                for val in all_values:
+                    if val.name == value.name:
+                        raise SemanticError()
+                all_values.append(value)
 
         GlobalVariables.STACK_CLASS.pop()
 
