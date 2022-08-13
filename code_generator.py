@@ -1,7 +1,7 @@
 from operator import le
 from typing import List
 
-from lark import Lark, ParseError
+from lark import Lark, ParseError, Tree
 from lark.visitors import Interpreter
 
 from decaf_enums import Constants, DecafTypes, LoopLabels
@@ -249,7 +249,33 @@ class CodeGenerator(Interpreter):
         return output_code
 
     def class_declaration(self, tree):
-        class_name = tree.children[0]
+        class_name = tree.children[1].value
+
+        class_ = tree.symbol_table.get_type(class_name).class_ref
+
+        GlobalVariables.STACK_CLASS.append(class_)
+
+        code = ''
+
+        functions_trees = []
+        variables_trees = []
+
+        for subtree in tree.children:
+            if isinstance(subtree, Tree) and subtree.data == Constants.field:
+                if subtree.children[1].data == Constants.function_decl:
+                    functions_trees.append(subtree)
+                else:
+                    variables_trees.append(subtree)
+
+        for subtree in variables_trees:
+            code += self.visit(subtree)
+
+        for subtree in functions_trees:
+            code += self.visit(subtree)
+
+
+
+        return code
 
     def assign(self, tree):
         GlobalVariables.ASSIGN_FLAG = True

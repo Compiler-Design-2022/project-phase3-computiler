@@ -1,10 +1,11 @@
 class Constants:
+    function_decl = 'function_decl'
     bool_const = 'BOOLCONSTANT'
     int_const = 'INTCONSTANT'
     double_const = 'DOUBLECONSTANT'
     str_const = 'STRINGCONSTANT'
     null_const = 'NULL'
-
+    field = 'field'
 
 class DecafTypes:
     bool_type = 'bool'
