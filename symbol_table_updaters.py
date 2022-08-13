@@ -1,9 +1,9 @@
 from lark.visitors import Interpreter
-from lark import Tree, Visitor
+from lark import Tree, Visitor, Token
 
-from decaf_enums import DecafTypes
+from decaf_enums import DecafTypes, Constants
 from semantic_error import SemanticError
-from symbol_table import SymbolTable, Variable, Type, Function
+from symbol_table import SymbolTable, Variable, Type, Function, Class
 
 stack = []
 class_stack = []
@@ -172,6 +172,39 @@ class SymbolTableUpdater(Interpreter):
             if isinstance(child, Tree):
                 child.symbol_table = new_block_table
                 self.visit(child)
+
+    def class_decl(self, tree):
+        class_name = tree.children[1].value
+
+        parent_name = None
+
+        if len(tree.children) > 2 and isinstance(tree.children[2], Token) and tree.children[2].value == Constants.extends:
+            parent_name = tree.children[3].value
+
+        class_ = Class(name=class_name, address=IncDataPointer(4), parent=parent_name)
+
+        type_ = Type(name=class_name, class_ref=class_, size=4)
+
+        tree.symbol_table.add_type(type_)
+
+        class_symbol_table = SymbolTable(parent=tree.symbol_table)
+
+        class_stack.append(class_)
+
+        for subtree in tree.children:
+            if isinstance(subtree, Tree) and subtree.data == 'field':
+                subtree.symbol_table = class_symbol_table
+                initial_stack_len = len(stack)
+                self.visit(subtree)
+                while initial_stack_len < len(stack):
+                    stack.pop()
+
+        class_stack.pop()
+
+        class_.set_fields(
+            member_data=class_symbol_table.variables,
+            member_functions=class_symbol_table.functions
+        )
 
 
 class SymbolTableParentUpdater(Visitor):

@@ -1,4 +1,5 @@
 class Constants:
+    extends = 'extends'
     function_decl = 'function_decl'
     bool_const = 'BOOLCONSTANT'
     int_const = 'INTCONSTANT'
