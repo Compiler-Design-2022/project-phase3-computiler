@@ -248,6 +248,9 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(Variable(var_type=var_type))
         return output_code
 
+    def class_declaration(self, tree):
+        pass
+
     def assign(self, tree):
         GlobalVariables.ASSIGN_FLAG = True
         l_var, r_var, expr1_code, expr2_code, output_code = self.prepare_calculations(tree)
@@ -450,7 +453,6 @@ class CodeGenerator(Interpreter):
                                                                                            'string',
                                                                                            'array'])))
 
-
         if var1.var_type.name == DecafTypes.double_type:
             version = CodeGenerator.get_version()
             output_code += MIPS.logical_double_equal.format(
@@ -476,15 +478,14 @@ class CodeGenerator(Interpreter):
 
         unknown_equal = bool(
             (not (var1.var_type.name == 'null' and var2.var_type.name == 'null')) and \
-                             (var1.var_type.name == var2.var_type.name or \
-                              (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
-                                                                                           'string',
-                                                                                           'array']) or \
-                              (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
-                                                                                           'string',
-                                                                                           'array'])))
+            (var1.var_type.name == var2.var_type.name or \
+             (var1.var_type.name == 'null' and var2.var_type.name not in ['double', 'int', 'bool',
+                                                                          'string',
+                                                                          'array']) or \
+             (var2.var_type.name == 'null' and var1.var_type.name not in ['double', 'int', 'bool',
+                                                                          'string',
+                                                                          'array'])))
 
-        
         if var1.var_type.name == DecafTypes.double_type:
             CodeGenerator.change_var()
             output_code += MIPS.set_multiple_var(
@@ -500,7 +501,7 @@ class CodeGenerator(Interpreter):
                 str(CodeGenerator.VARIABLE_NAME_COUNT),
                 10
             )
-        
+
         elif unknown_equal:
             output_code += MIPS.logical_unknown_not_equal
 
@@ -624,13 +625,12 @@ class CodeGenerator(Interpreter):
         output_code = MIPSSpecials.method_call.format(
             actuals=actuals,
             func_name=function_label,
-            args_size=args_num * 4 
+            args_size=args_num * 4
         )
         if function.return_type:
             output_code += MIPSSpecials.method_call_return
         GlobalVariables.STACK.append(Variable(var_type=function.return_type))
         return output_code
-
 
     def type(self, tree):
         return tree.symbol_table.get_type(tree.children[0].value)
@@ -764,7 +764,7 @@ class CodeGenerator(Interpreter):
         GlobalVariables.STACK.append(
             Variable(
                 var_type=var_type
-        )
+            )
         )
         return output_code
 
@@ -777,7 +777,7 @@ class CodeGenerator(Interpreter):
             raise SemanticError(104)
         if var.var_type.name != DecafTypes.array_type:
             raise SemanticError(105)
-    
+
         assign_code = ''
         if GlobalVariables.ASSIGN_FLAG:
             assign_code = MIPSArray.array_assign

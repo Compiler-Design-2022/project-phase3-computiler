@@ -27,7 +27,7 @@ function_decl: type IDENT "(" formals ")" statement_block
 formals: variable ("," variable)*
     |
 
-class_decl: CLASS IDENT (EXTENDS IDENT)? (IMPLEMENTS IDENT ("," IDENT)*)?  "{" field* "}"
+class_decl: CLASS IDENT (EXTENDS IDENT)? (IMPLEMENTS IDENT ("," IDENT)*)?  "{" field* "}" -> class_declaration
 
 field: access_modifier variable_decl
     | access_modifier function_decl
