@@ -5,8 +5,8 @@ we used PLY and yacc library for first two phases of project (tokenizing and par
 we design a little and simple compiler for Decaf programming language with python and its special libraries for compiling and tokenizing.
 
 
-AmirHossein Arabzade
-Armin DelgosarMaher
+AmirHossein Arabzade-
+Armin DelgosarMaher-
 Seyyed Alireza Ghazanfari
 
 Sharif University Of Technology
